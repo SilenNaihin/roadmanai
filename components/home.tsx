@@ -6,13 +6,11 @@ import { Options } from '../app/types/options';
 
 type Props = {
   prev: string[];
-  // add other prop types here
 };
 
 const Page: React.FC<Props> = (props) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // replace all this.state calls with useState hooks
   const [data, setData] = useState<string[]>(props.prev || []);
   const [progress, setProgress] = useState<number>(0);
   const [started, setStarted] = useState<boolean>(false);
@@ -41,7 +39,6 @@ const Page: React.FC<Props> = (props) => {
   // audioDomRef = null;
   // abortController = null;
 
-  // replace this.chunks with a useRef hook
   const chunks = useRef<(Blob | null)[]>([]);
 
   const sendData = async (

@@ -38,7 +38,7 @@ apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
   const outputDir: string =
     serverRuntimeConfig.PROJECT_ROOT + '/public/uploads';
 
-  let sCommand: string = `whisper './${filename}' --model ${options.model} --language ${options.language} --task ${options.task} --output_dir '${outputDir}'`;
+  let sCommand: string = `python3 ./whisper.py --input './${filename}' --output_dir '${outputDir}'`;
 
   exec(
     sCommand,
