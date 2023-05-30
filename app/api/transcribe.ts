@@ -3,12 +3,7 @@ import nextConnect from 'next-connect';
 import multer, { diskStorage } from 'multer';
 import { exec, ExecException } from 'child_process';
 import getConfig from 'next/config';
-
-interface Options {
-  model: string;
-  language: string;
-  task: string;
-}
+import { Options } from '../types/options';
 
 const upload = multer({
   storage: diskStorage({

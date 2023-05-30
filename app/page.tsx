@@ -1,4 +1,4 @@
-import Test from './components/transcription';
+import Test from '../components/home';
 
 export default function Home() {
   return (
