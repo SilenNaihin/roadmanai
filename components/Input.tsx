@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { Options } from '../app/types/options';
 import AudioRecorder from './AudioRecorder';
+import axios from 'axios';
 
 const Input: React.FC = () => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
@@ -11,38 +12,33 @@ const Input: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmit();
-  };
-
-  const handleSubmit = async () => {
     if (!audioFile) return;
 
     const formData = new FormData();
-    formData.append('file', audioFile);
-    formData.append(
-      'options',
-      JSON.stringify({
-        model: process.env.WHISPER_MODEL,
-        language: 'language_value',
-        task: 'task_value',
-      })
-    );
-
-    try {
-      const response = await fetch('/api/transcribe', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      console.error(err);
-    }
+    formData.append('text', text);
   };
 
   useEffect(() => {
-    handleSubmit();
+    const transcribeAudio = async () => {
+      if (!audioFile) return;
+
+      const formData = new FormData();
+      formData.append('audioFile', audioFile, audioFile.name);
+
+      fetch('http://localhost:3001/upload', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    };
+
+    transcribeAudio();
   }, [audioFile]);
 
   return (
