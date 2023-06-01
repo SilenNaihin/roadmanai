@@ -1,23 +1,25 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import AskBox from './AskBox';
 
-import { Options } from '../app/types/options';
-import AudioRecorder from './AudioRecorder';
-import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+
+type Options = 'translate' | 'ask';
 
 const Input: React.FC = () => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
-  const [text, setText] = useState<string>('');
+  const [translateType, setTranslateType] = useState<Options>('translate');
 
   const [transcription, setTranscription] = useState<string>('');
+  const [selectFocused, setSelectFocused] = useState(false);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
     if (!audioFile) return;
 
-    const formData = new FormData();
-    formData.append('text', text);
+    setTranscription(text);
   };
 
   useEffect(() => {
@@ -97,33 +99,51 @@ const Input: React.FC = () => {
   }, [transcription]);
 
   return (
-    <div>
-      <h1>Ask</h1>
-      <form onSubmit={handleFormSubmit}>
-        <input
-          className="border"
-          type="text"
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button className="bg-red-100" type="submit">
-          Submit Text
-        </button>
-      </form>
-      <h1>Talk</h1>
-      <form onSubmit={handleFormSubmit}>
-        <input
-          className="border"
-          type="text"
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button className="bg-red-100" type="submit">
-          Submit Text
-        </button>
-      </form>
-      <AudioRecorder
-        setAudioFile={setAudioFile}
-        transcription={transcription}
-      />
+    <div className="w-full flex flex-col items-center mb-16">
+      {transcription ? (
+        <div className="mb-auto">{transcription}</div>
+      ) : (
+        <>
+          <div className="relative inline-flex mb-2">
+            <FontAwesomeIcon
+              className={`absolute top-0 right-0 m-3 pointer-events-none ${
+                !selectFocused ? '' : 'hidden'
+              }`}
+              icon={faChevronDown}
+            />
+            <FontAwesomeIcon
+              className={`absolute top-0 right-0 m-3 pointer-events-none ${
+                selectFocused ? '' : 'hidden'
+              }`}
+              icon={faChevronUp}
+            />
+            <select
+              onBlur={() => setSelectFocused(false)}
+              onClick={() => setSelectFocused(!selectFocused)}
+              onChange={(e) =>
+                setTranslateType(e.target.value as 'translate' | 'ask')
+              }
+              className="border border-gray-300 rounded-full h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none font-bold"
+            >
+              <option value="translate">Translate</option>
+              <option value="ask">Ask</option>
+            </select>
+          </div>
+          {translateType === 'translate' ? (
+            <AskBox
+              placeholder="Translate your text to roadman..."
+              setAudioFile={setAudioFile}
+              handleFormSubmit={handleFormSubmit}
+            />
+          ) : (
+            <AskBox
+              placeholder="Ask a roadman a question..."
+              setAudioFile={setAudioFile}
+              handleFormSubmit={handleFormSubmit}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

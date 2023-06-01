@@ -1,16 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 
 interface AudioRecorderProps {
   setAudioFile: React.Dispatch<React.SetStateAction<Blob | null>>;
-  transcription: string;
 }
 
-const AudioRecorder: React.FC<AudioRecorderProps> = ({
-  setAudioFile,
-  transcription,
-}) => {
+const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
   const [recording, setRecording] = useState<boolean>(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -48,10 +46,15 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
 
   return (
     <div>
-      <button onClick={handleRecordingClick}>
-        {recording ? 'Stop recording' : 'Start recording'}
+      <button className="flex items-center p-1" onClick={handleRecordingClick}>
+        <h5 className="mr-2">{recording ? 'Stop recording' : 'Record'}</h5>
+        <FontAwesomeIcon
+          className="cursor-pointer"
+          beat={recording}
+          icon={faMicrophone}
+          style={{ color: recording ? 'red' : 'black' }}
+        />
       </button>
-      <div>{transcription}</div>
     </div>
   );
 };
