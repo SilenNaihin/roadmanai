@@ -19,30 +19,66 @@ const Input: React.FC = () => {
   };
 
   useEffect(() => {
-    const transcribeAudio = async () => {
+    const transcribeAndComplete = async () => {
       if (!audioFile) return;
 
       const formData = new FormData();
-      formData.append('audioFile', audioFile, audioFile.name);
+      formData.append('audioFile', audioFile, 'audio.webm');
 
-      fetch('http://localhost:3001/upload', {
-        method: 'POST',
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      try {
+        const transcriptionResponse = await fetch(
+          'http://localhost:3001/transcribe',
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        const transcriptionData = await transcriptionResponse.json();
+
+        console.log(transcriptionData);
+
+        // Perform validation or error handling here based on transcriptionData
+
+        const completionResponse = await fetch(
+          'http://localhost:3001/completion',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ transcript: transcriptionData.transcript }),
+          }
+        );
+
+        const completionData = await completionResponse.json();
+
+        // Perform validation or error handling here based on completionData
+
+        console.log(completionData);
+        // setData(completionData);
+      } catch (error) {
+        // Handle errors here
+      }
     };
 
-    transcribeAudio();
+    transcribeAndComplete();
   }, [audioFile]);
 
   return (
     <div>
+      <h1>Ask</h1>
+      <form onSubmit={handleFormSubmit}>
+        <input
+          className="border"
+          type="text"
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button className="bg-red-100" type="submit">
+          Submit Text
+        </button>
+      </form>
+      <h1>Talk</h1>
       <form onSubmit={handleFormSubmit}>
         <input
           className="border"
@@ -59,96 +95,3 @@ const Input: React.FC = () => {
 };
 
 export default Input;
-
-// import { MediaStream, MediaRecorder } from 'mediastream';
-// const audioRef = useRef<HTMLAudioElement | null>(null);
-
-// // replace all this.state calls with useState hooks
-// const [data, setData] = useState<string[]>([]);
-// const [progress, setProgress] = useState<number>(0);
-// const [started, setStarted] = useState<boolean>(false);
-
-// const [selected, setSelected] = useState<string>('');
-// const [error, setError] = useState<boolean>(false);
-// const [sendStatus, setSendStatus] = useState<number>(0);
-
-// const [recording, setRecording] = useState<boolean>(false);
-// const [countDown, setCountDown] = useState<boolean>(false);
-// const [count, setCount] = useState<number>(0);
-
-// const [openDialog, setOpenDialog] = useState<boolean>(false);
-// const [duration, setDuration] = useState<number>(5);
-// const [model, setModel] = useState<string>('tiny');
-// const [task, setTask] = useState<string>('translate');
-
-// const [playDuration, setPlayDuration] = useState<number>(0);
-
-// const MAX_COUNT = 10;
-// const MIN_DECIBELS = -45;
-// const MAX_PAUSE = 3000;
-
-// // animFrame = null;
-// // countTimer = null;
-// // audioDomRef = null;
-// // abortController = null;
-
-// // replace this.chunks with a useRef hook
-// const chunks = useRef<(Blob | null)[]>([]);
-
-// const sendData = async (
-//   file: File,
-//   options: Options,
-//   signal: AbortSignal
-// ) => {
-//   let formData = new FormData();
-//   formData.append('file', file);
-//   formData.append('options', JSON.stringify(options));
-
-//   try {
-//     const resp = await fetch('/api/transcribe', {
-//       method: 'POST',
-//       headers: {
-//         Accept: 'application/json',
-//       },
-//       body: formData,
-//       signal: signal,
-//     });
-
-//     return await resp.json();
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
-
-// const formatData = (data) => {
-//   return data
-//     .split('\n')
-//     .filter((item) => item.length > 0)
-//     .filter((item) => item.indexOf('[') === 0);
-// };
-
-// ... add other functions here
-
-// const handleStream = (stream: MediaStream) => {
-//   // The MediaRecorder type needs to be properly defined depending on your context.
-//   // The MediaRecorder type used here is generic and may need to be adjusted based on your actual usage and types.
-//   const mediaRec: MediaRecorder = new MediaRecorder(stream);
-
-//   mediaRec.addEventListener('dataavailable', (e: BlobEvent) => {
-//     chunks.push(e.data);
-//   });
-//   mediaRec.addEventListener('stop', handleStop);
-
-//   checkAudioLevel(stream);
-// };
-
-// const handleError = (error: any) => {
-//   console.log(error);
-//   setState((prevState) => ({ ...prevState, error: true }));
-// };
-
-// const handleStart = () => {
-//   setStarted(true);
-// };
-
-// ... add other handlers here

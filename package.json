@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "server": "ts-node server/server.ts",
+    "server": "ts-node api/server.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\""
   },
   "dependencies": {

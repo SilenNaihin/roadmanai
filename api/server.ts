@@ -30,26 +30,25 @@ interface MulterRequest extends Request {
 }
 
 app.use(cors());
+app.use(express.json());
 
 app.post(
-  '/upload',
+  '/transcribe',
   upload.single('audioFile'),
   (req: MulterRequest, res: Response) => {
-    console.log(req.file);
     const filePath = req.file?.path;
-
-    console.log(filePath);
 
     // Construct the absolute file path to whisper.py
     const scriptPath = path.join(__dirname, 'whisper.py');
 
-    let sCommand = `python ${scriptPath} --path '${filePath}'`;
+    let sCommand = `python "${scriptPath}" --filePath "${filePath}"`;
 
     exec(sCommand, (err, stdout, stderr) => {
       if (err) {
         res.send({ status: 300, error: err.message, out: null, file: null });
       } else {
-        const transcript = stdout;
+        const json = JSON.parse(stdout);
+        const transcript = json.text;
         res.send({
           status: 200,
           error: stderr,
@@ -61,6 +60,34 @@ app.post(
     });
   }
 );
+
+app.post('/completion', (req: Request, res: Response) => {
+  const scriptPath = path.join(__dirname, 'completion.py');
+  console.log(req.body);
+
+  let sCommand = `python "${scriptPath}" --text "${req.body.transcript}"`;
+
+  exec(sCommand, (err, stdout, stderr) => {
+    if (err) {
+      res.send({ status: 300, error: err.message, out: null, file: null });
+    } else {
+      const json = JSON.parse(stdout);
+      const translation = json.text;
+      res.send({
+        status: 200,
+        error: stderr,
+        out: stdout,
+        file: req.file,
+        translation,
+      });
+    }
+  });
+});
+
+app.post('/eleven', (req: Request, res: Response) => {
+  const scriptPath = path.join(__dirname, 'eleven.py');
+  console.log(req.body);
+});
 
 const port = 3001;
 app.listen(port, () => console.log(`Server listening on port ${port}`));

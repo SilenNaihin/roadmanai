@@ -24,9 +24,13 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
       .getUserMedia({ audio: true })
       .then((stream: MediaStream) => {
         const newMediaRecorder = new MediaRecorder(stream);
+        let audioChunks: Blob[] = [];
         newMediaRecorder.ondataavailable = (e: BlobEvent) => {
-          console.log(e.data);
-          setAudioFile(e.data);
+          audioChunks.push(e.data);
+        };
+        newMediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          setAudioFile(audioBlob);
         };
         setMediaRecorder(newMediaRecorder);
       })
