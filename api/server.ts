@@ -38,10 +38,7 @@ app.post(
   (req: MulterRequest, res: Response) => {
     const filePath = req.file?.path;
 
-    // Construct the absolute file path to whisper.py
-    const scriptPath = path.join(__dirname, 'whisper.py');
-
-    let sCommand = `python "${scriptPath}" --filePath "${filePath}"`;
+    let sCommand = `python -m api.whisper --filePath "${filePath}"`;
 
     exec(sCommand, (err, stdout, stderr) => {
       if (err) {
@@ -62,23 +59,20 @@ app.post(
 );
 
 app.post('/completion', (req: Request, res: Response) => {
-  const scriptPath = path.join(__dirname, 'completion.py');
   console.log(req.body);
 
-  let sCommand = `python "${scriptPath}" --text "${req.body.transcript}"`;
+  let sCommand = `python -m api.completion --text "${req.body.transcript}"`;
 
   exec(sCommand, (err, stdout, stderr) => {
     if (err) {
       res.send({ status: 300, error: err.message, out: null, file: null });
     } else {
-      const json = JSON.parse(stdout);
-      const translation = json.text;
       res.send({
         status: 200,
         error: stderr,
         out: stdout,
         file: req.file,
-        translation,
+        translation: stdout,
       });
     }
   });

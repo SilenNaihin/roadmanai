@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # completion settings
 COMPLETION_MODEL = "gpt-3.5-turbo"
 TEMPERATURE = 0
-MAX_TOKENS = 10
+MAX_TOKENS = 150
 COMPLETION_STOP_SEQUENCES = None
 COMPLETION_PRESENCE_PENALTY = 0
 COMPLETION_FREQUENCY_PENALTY = 0
@@ -49,7 +49,6 @@ def model_response(
         if expanded_result:
             return result  # type: ignore
 
-        return result["choices"][0]["message"]["content"]
+        return result.choices[0].message.content  # type: ignore
     except Exception as e:
-        print(e, flush=True)
-        return ""
+        return f"{e}"

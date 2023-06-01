@@ -12,9 +12,14 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
     null
   );
 
-  const handleStartRecording = () => {
+  const handleRecordingClick = () => {
     if (mediaRecorder !== null) {
-      recording ? mediaRecorder.stop() : mediaRecorder.start();
+      if (recording) {
+        mediaRecorder.stop();
+      } else {
+        mediaRecorder.start();
+        setAudioFile(null);
+      }
       setRecording(!recording);
     }
   };
@@ -41,7 +46,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
 
   return (
     <div>
-      <button onClick={handleStartRecording}>
+      <button onClick={handleRecordingClick}>
         {recording ? 'Stop recording' : 'Start recording'}
       </button>
     </div>
