@@ -10,6 +10,8 @@ const Input: React.FC = () => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
   const [text, setText] = useState<string>('');
 
+  const [transcription, setTranscription] = useState<string>('');
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!audioFile) return;
@@ -19,7 +21,7 @@ const Input: React.FC = () => {
   };
 
   useEffect(() => {
-    const transcribeAndComplete = async () => {
+    const transcribeAudio = async () => {
       if (!audioFile) return;
 
       const formData = new FormData();
@@ -36,8 +38,22 @@ const Input: React.FC = () => {
 
         const transcriptionData = await transcriptionResponse.json();
 
-        console.log(transcriptionData);
+        setTranscription(transcriptionData.transcript);
 
+        console.log('transcripted', transcriptionData.transcript);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    transcribeAudio();
+  }, [audioFile]);
+
+  useEffect(() => {
+    const generateRoadman = async () => {
+      if (!transcription) return;
+
+      try {
         // Perform validation or error handling here based on transcriptionData
 
         const completionResponse = await fetch(
@@ -47,23 +63,38 @@ const Input: React.FC = () => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ transcript: transcriptionData.transcript }),
+            body: JSON.stringify({
+              transcript: transcription,
+            }),
           }
         );
 
         const completionData = await completionResponse.json();
 
-        // Perform validation or error handling here based on completionData
+        const roadmanTing = completionData.translation;
 
-        console.log(completionData);
-        // setData(completionData);
+        console.log('translated, generating speech...', roadmanTing);
+
+        const generateSpeech = await fetch('http://localhost:3001/eleven', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            speech: roadmanTing,
+          }),
+        });
+
+        const speechData = await generateSpeech.json();
+
+        console.log(speechData);
       } catch (error) {
-        // Handle errors here
+        console.log(error);
       }
     };
 
-    transcribeAndComplete();
-  }, [audioFile]);
+    generateRoadman();
+  }, [transcription]);
 
   return (
     <div>
@@ -89,7 +120,10 @@ const Input: React.FC = () => {
           Submit Text
         </button>
       </form>
-      <AudioRecorder setAudioFile={setAudioFile} />
+      <AudioRecorder
+        setAudioFile={setAudioFile}
+        transcription={transcription}
+      />
     </div>
   );
 };

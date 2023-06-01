@@ -83,8 +83,23 @@ app.post('/completion', (req: Request, res: Response) => {
 });
 
 app.post('/eleven', (req: Request, res: Response) => {
-  const scriptPath = path.join(__dirname, 'eleven.py');
-  console.log(req.body);
+  console.log('eleven', req.body.speech);
+
+  let sCommand = `python -m api.eleven --text "${req.body.speech}"`;
+
+  exec(sCommand, (err, stdout, stderr) => {
+    if (err) {
+      res.send({ status: 300, error: err.message, out: null, file: null });
+    } else {
+      res.send({
+        status: 200,
+        error: stderr,
+        out: stdout,
+        file: req.file,
+        translation: stdout,
+      });
+    }
+  });
 });
 
 const port = 3001;

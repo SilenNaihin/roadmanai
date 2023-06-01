@@ -24,7 +24,7 @@ Sentence: Good to see you! How ? How are you doing young fellow? How are things 
 Phonetic translation:  Wah gwan, mandem! How ye douin', yung blud?
 
 Sentence: What are your thoughts on the socioeconomic and political status of the world?
-Phonetic translation: Wha' be yuh thoughts on di socieeconomaay and poli-ti-kal status of di world - maiy jee?
+Phonetic translation: Wha' be yuh thoughts on di socieeconomaay and poli-ti-kal status of di world - my jee?
 
 Sentence: I'm just trying this thing out I really hope that the output is good.
 Phonetic translation: Man's jus' testin' dis ting' out, innit'? Mi reall-y 'ope di outpt' come proppa', ya get mi - fam?

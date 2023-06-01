@@ -4,9 +4,13 @@ import React, { useState, useEffect } from 'react';
 
 interface AudioRecorderProps {
   setAudioFile: React.Dispatch<React.SetStateAction<Blob | null>>;
+  transcription: string;
 }
 
-const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
+const AudioRecorder: React.FC<AudioRecorderProps> = ({
+  setAudioFile,
+  transcription,
+}) => {
   const [recording, setRecording] = useState<boolean>(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -47,6 +51,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
       <button onClick={handleRecordingClick}>
         {recording ? 'Stop recording' : 'Start recording'}
       </button>
+      <div>{transcription}</div>
     </div>
   );
 };
