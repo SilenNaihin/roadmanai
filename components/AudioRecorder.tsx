@@ -14,12 +14,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
 
   const handleRecordingClick = () => {
     if (mediaRecorder !== null) {
-      if (recording) {
-        mediaRecorder.stop();
-      } else {
-        mediaRecorder.start();
-        setAudioFile(null);
-      }
+      recording ? mediaRecorder.stop() : mediaRecorder.start();
       setRecording(!recording);
     }
   };
@@ -29,15 +24,18 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
       .getUserMedia({ audio: true })
       .then((stream: MediaStream) => {
         const newMediaRecorder = new MediaRecorder(stream);
-        let audioChunks: Blob[] = [];
-        newMediaRecorder.ondataavailable = (e: BlobEvent) => {
-          audioChunks.push(e.data);
-        };
-        newMediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          setAudioFile(audioBlob);
-        };
         setMediaRecorder(newMediaRecorder);
+
+        newMediaRecorder.ondataavailable = (e: BlobEvent) => {
+          // Declare the audioChunks array inside the ondataavailable handler
+          let audioChunks: Blob[] = [];
+          audioChunks.push(e.data);
+
+          newMediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            setAudioFile(audioBlob);
+          };
+        };
       })
       .catch((err: Error) =>
         console.error('Error accessing media devices.', err)

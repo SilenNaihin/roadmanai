@@ -9,9 +9,6 @@ const app = express();
 
 // Create upload directory if it doesn't exist
 const uploadDir = path.resolve(__dirname, '../public/uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 // Multer setup
 const storage = diskStorage({
@@ -19,7 +16,7 @@ const storage = diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    cb(null, `tmp-${file.originalname}`);
+    cb(null, `tmp-audio.webm`);
   },
 });
 
@@ -53,13 +50,20 @@ app.post(
           file: req.file,
           transcript,
         });
+
+        // Delete the file
+        fs.unlink(`${uploadDir}/tmp-audio.webm`, (err) => {
+          if (err) {
+            console.error('Could not delete file: ', err);
+          }
+        });
       }
     });
   }
 );
 
 app.post('/completion', (req: Request, res: Response) => {
-  console.log(req.body);
+  console.log('transcript', req.body.transcript);
 
   let sCommand = `python -m api.completion --text "${req.body.transcript}"`;
 

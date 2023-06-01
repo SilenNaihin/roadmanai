@@ -23,7 +23,7 @@ const Input: React.FC = () => {
       if (!audioFile) return;
 
       const formData = new FormData();
-      formData.append('audioFile', audioFile, 'audio.webm');
+      formData.append('audioFile', audioFile);
 
       try {
         const transcriptionResponse = await fetch(
