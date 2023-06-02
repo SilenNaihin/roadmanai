@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import AskBox from './AskBox';
+import ResponseBox from './ResponseBox';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -13,11 +14,14 @@ const Input: React.FC = () => {
   const [translateType, setTranslateType] = useState<Options>('translate');
 
   const [transcription, setTranscription] = useState<string>('');
-  const [selectFocused, setSelectFocused] = useState(false);
+  const [translation, setTranslation] = useState<string>('');
+  const [selectFocused, setSelectFocused] = useState<boolean>(false);
+
+  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
-    if (!audioFile) return;
+    if (!text) return;
 
     setTranscription(text);
   };
@@ -75,6 +79,9 @@ const Input: React.FC = () => {
 
         const roadmanTing = completionData.translation;
 
+        setTranslation(roadmanTing);
+        setAudioPlaying(true);
+
         console.log('translated, generating speech...', roadmanTing);
 
         const generateSpeech = await fetch('http://localhost:3001/eleven', {
@@ -90,8 +97,10 @@ const Input: React.FC = () => {
         const speechData = await generateSpeech.json();
 
         console.log(speechData);
+        setAudioPlaying(false);
       } catch (error) {
         console.log(error);
+        setAudioPlaying(false);
       }
     };
 
@@ -99,9 +108,13 @@ const Input: React.FC = () => {
   }, [transcription]);
 
   return (
-    <div className="w-full flex flex-col items-center mb-16">
-      {transcription ? (
-        <div className="mb-auto">{transcription}</div>
+    <div className="w-full h-full mt-32 flex flex-col items-center mb-16">
+      {!transcription ? (
+        <ResponseBox
+          transcription={'transcription'}
+          translation={'translation'}
+          audioPlaying={audioPlaying}
+        />
       ) : (
         <>
           <div className="relative inline-flex mb-2">
