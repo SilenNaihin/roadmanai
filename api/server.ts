@@ -4,6 +4,7 @@ import cors from 'cors';
 import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+import json from 'json5';
 
 const app = express();
 
@@ -91,12 +92,14 @@ app.post('/completions', (req: Request, res: Response) => {
     if (err) {
       res.send({ status: 300, error: err.message, out: null, file: null });
     } else {
+      const json: { translate: string; phonetic: string } = JSON.parse(stdout);
       res.send({
         status: 200,
         error: stderr,
         out: stdout,
         file: req.file,
-        translation: stdout,
+        translation: json.translate,
+        phonetic: json.phonetic,
       });
     }
   });

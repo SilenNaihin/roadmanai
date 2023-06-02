@@ -18,6 +18,7 @@ const Input: React.FC = () => {
   const [selectFocused, setSelectFocused] = useState<boolean>(false);
 
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  const [translating, setTranslating] = useState<boolean>(false);
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
@@ -60,7 +61,7 @@ const Input: React.FC = () => {
       if (!transcription) return;
 
       try {
-        // Perform validation or error handling here based on transcriptionData
+        setTranslating(true);
 
         const completionResponse = await fetch(
           'http://localhost:3001/completions',
@@ -70,7 +71,7 @@ const Input: React.FC = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              transcript: transcription,
+              transcript: transcription.trimEnd(),
               type: translateType,
             }),
           }
@@ -78,12 +79,16 @@ const Input: React.FC = () => {
 
         const completionData = await completionResponse.json();
 
-        const roadmanTing = completionData.translation;
+        setTranslating(false);
+
+        const roadmanTing: string = completionData.translation;
+        const roadmanTalk: string = completionData.phonetic;
 
         setTranslation(roadmanTing);
+
         setAudioPlaying(true);
 
-        console.log('translated, generating speech...', roadmanTing);
+        console.log('translated, generating speech...', roadmanTalk);
 
         const generateSpeech = await fetch('http://localhost:3001/eleven', {
           method: 'POST',
@@ -91,7 +96,7 @@ const Input: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            speech: roadmanTing,
+            speech: roadmanTalk,
           }),
         });
 
@@ -110,11 +115,12 @@ const Input: React.FC = () => {
 
   return (
     <div className="w-full h-full mt-32 flex flex-col items-center mb-16">
-      {!transcription ? (
+      {transcription ? (
         <ResponseBox
-          transcription={'transcription'}
-          translation={'translation'}
+          transcription={transcription}
+          translation={translation}
           audioPlaying={audioPlaying}
+          translating={translating}
         />
       ) : (
         <>

@@ -1,4 +1,5 @@
 import argparse
+import json
 
 from api.utils.llm_response import model_response
 from api.utils.prompts import ASK_PROMPT, TRANSLATE_PROMPT, PHONETIC_PROMPT
@@ -22,7 +23,7 @@ if __name__ == "__main__":
                 {
                     "role": "system",
                     "content": f"""Original  text: {args.text}
-Roadman translation: In under 150 tokens return the translated text that sounds like a roadman""",
+Roadman translation:""",
                 },
             ]
         )
@@ -33,7 +34,7 @@ Roadman translation: In under 150 tokens return the translated text that sounds 
                 {
                     "role": "system",
                     "content": f"""Sentence: {args.text}
-Phonetic translation: In under 150 tokens respond in the style and form of a roadman""",
+Phonetic translation:""",
                 },
             ]
         )
@@ -50,4 +51,4 @@ Phonetic translation: Without changing or adding any words return only the trans
         ]
     )
 
-    print(final_completion)
+    print(json.dumps(final_completion))
