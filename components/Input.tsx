@@ -63,7 +63,7 @@ const Input: React.FC = () => {
         // Perform validation or error handling here based on transcriptionData
 
         const completionResponse = await fetch(
-          'http://localhost:3001/completion',
+          'http://localhost:3001/completions',
           {
             method: 'POST',
             headers: {
@@ -71,6 +71,7 @@ const Input: React.FC = () => {
             },
             body: JSON.stringify({
               transcript: transcription,
+              type: translateType,
             }),
           }
         );

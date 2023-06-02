@@ -62,10 +62,30 @@ app.post(
   }
 );
 
-app.post('/completion', (req: Request, res: Response) => {
+app.post('/translation_completion', (req: Request, res: Response) => {
   console.log('transcript', req.body.transcript);
 
-  let sCommand = `python -m api.completion --text "${req.body.transcript}"`;
+  let sCommand = `python -m api.translation_completion --text "${req.body.transcript}"`;
+
+  exec(sCommand, (err, stdout, stderr) => {
+    if (err) {
+      res.send({ status: 300, error: err.message, out: null, file: null });
+    } else {
+      res.send({
+        status: 200,
+        error: stderr,
+        out: stdout,
+        file: req.file,
+        translation: stdout,
+      });
+    }
+  });
+});
+
+app.post('/completions', (req: Request, res: Response) => {
+  console.log('transcript', req.body.transcript);
+
+  let sCommand = `python -m api.completions --text "${req.body.transcript}" --type "${req.body.type}"`;
 
   exec(sCommand, (err, stdout, stderr) => {
     if (err) {
