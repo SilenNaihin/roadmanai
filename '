@@ -1,0 +1,137 @@
+[33mcommit 1dcbca32d58ea0a2d3a051c41f79085fbafdd932[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Sat Jun 3 12:35:57 2023 -0400
+
+    outputting to correct directory
+
+[33mcommit 0778073d4c9328b3994afe41f798590d46fa6eb2[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Sat Jun 3 12:35:55 2023 -0400
+
+    outputting to correct directory
+
+[33mcommit 76c45f5d29572c4c4220654cef0ebff534c3143a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Sat Jun 3 12:16:55 2023 -0400
+
+    express -> serverless vercel
+
+[33mcommit fac0e68facb7a67e4c35c52a5783acfef2bb8f0a[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 22:34:09 2023 -0400
+
+    title, favicon
+
+[33mcommit a61d941fd997e3abdc7205613ef6dc03e6eeb445[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 21:57:22 2023 -0400
+
+    playing audio back saving it as HTMLAudioEl
+
+[33mcommit 08fbaae9fec3cde90a006e8756e27672325074c0[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 20:51:12 2023 -0400
+
+    eleven working
+
+[33mcommit 87da98fdf1aa76a94167c8dd8ea3a1af539b663c[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 13:47:05 2023 -0400
+
+    everything working, connected
+
+[33mcommit 67916cd548c3fa2f09b79f210d24228950fc16f6[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 13:19:03 2023 -0400
+
+    ask and translate completion, sep phonetic
+
+[33mcommit 739098cce4d7fd573cbb23a4e97016974ea44dac[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 12:34:53 2023 -0400
+
+    building the response area
+
+[33mcommit 654240cd7f37672385761053f8cbdbfa5cd8e049[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Fri Jun 2 11:45:02 2023 -0400
+
+    changing sample
+
+[33mcommit 1fdb97b7a008ef3b2b91a490c819db9162cddcb4[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Thu Jun 1 18:52:33 2023 -0400
+
+    ui up and running
+
+[33mcommit 9a69a4ab3184500e0dbd469037dca77b3ce4ada8[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Thu Jun 1 16:31:01 2023 -0400
+
+    connecting eleven (broken)
+
+[33mcommit 4cfc0742118992b1a7892bc3cbf94f51c360b8a7[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Thu Jun 1 15:00:14 2023 -0400
+
+    bug audio appending, auto deleting tmp
+
+[33mcommit 05e0080af05e9f60bd1b64a824db9c1895b0d1e1[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Thu Jun 1 14:42:18 2023 -0400
+
+    text completion working
+
+[33mcommit 106fbd07e5c46a8e85c4be0e78599792563442f9[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Thu Jun 1 14:13:08 2023 -0400
+
+    whisper working, working on response
+
+[33mcommit 260ce89ffdf3ab933a254ea5326b2b57db441147[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Wed May 31 19:54:01 2023 -0400
+
+    remove not working middleware
+
+[33mcommit c214c8a2ffc1c4c2c6c463f9100a5d8bb719ffa5[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Wed May 31 19:53:27 2023 -0400
+
+    setting up express server
+
+[33mcommit 0eed4b69d86a89d57149350c2913622a3c9e5604[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Tue May 30 16:44:58 2023 -0400
+
+    audio recorder and setting up .py file
+
+[33mcommit 8a36d3305f673e02b69cff0b1f52ceef80e92d47[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Tue May 30 12:45:18 2023 -0400
+
+    changing the command line to python call
+
+[33mcommit 27efe105b7951a6d7239a6e4d45e94b647dbaf66[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Tue May 30 12:41:13 2023 -0400
+
+    working on home file
+
+[33mcommit 5677bfed9ae9c983c76dfe4bea35fa888aac6c52[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Tue May 30 11:46:44 2023 -0400
+
+    transcribe page
+
+[33mcommit 05a2598a1cf533a5d69ed7d7c9b1912e4d18a353[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Mon May 29 18:10:46 2023 -0400
+
+    init
+
+[33mcommit 26b737fe55d1931dfeaf069848083bdab2cecade[m
+Author: Silen Naihin <silen.naihin@gmail.com>
+Date:   Mon May 29 15:31:28 2023 -0400
+
+    Initial commit
