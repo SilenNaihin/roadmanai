@@ -12,8 +12,6 @@ const port = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';
 const nextApp: NextServer = next({ dev });
 
-console.log(nextApp);
-
 const nextHandler: RequestHandler = nextApp.getRequestHandler();
 
 nextApp.prepare().then(async () => {

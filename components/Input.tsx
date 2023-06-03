@@ -40,7 +40,7 @@ const Input: React.FC = () => {
 
       try {
         const transcriptionResponse: Response = await fetch(
-          'http://localhost:3000/transcribe',
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/transcribe`,
           {
             method: 'POST',
             body: formData,
@@ -90,7 +90,7 @@ const Input: React.FC = () => {
         setTranslating(true);
 
         const completionResponse: Response = await fetch(
-          'http://localhost:3000/completions',
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/completions`,
           {
             method: 'POST',
             headers: {
@@ -119,7 +119,7 @@ const Input: React.FC = () => {
         setAudioPlaying(true);
 
         const generateSpeech: Response = await fetch(
-          'http://localhost:3000/eleven',
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/eleven`,
           {
             method: 'POST',
             headers: {
@@ -162,14 +162,6 @@ const Input: React.FC = () => {
     <div className="w-full h-full mt-32 flex flex-col items-center mb-16">
       {response ? (
         <>
-          {responseAudio && (
-            <button onClick={() => handleAgainClick()}>
-              <h3>
-                {response ? 'New roadman response' : `Back to roadman response`}
-              </h3>
-            </button>
-          )}
-
           <ResponseBox
             transcription={transcription}
             translation={translation}
@@ -178,6 +170,13 @@ const Input: React.FC = () => {
             responseAudio={responseAudio}
             setAudioPlaying={setAudioPlaying}
           />
+          {responseAudio && (
+            <button onClick={() => handleAgainClick()}>
+              <h3>
+                {response ? 'New roadman response' : `Back to roadman response`}
+              </h3>
+            </button>
+          )}
         </>
       ) : (
         <>
