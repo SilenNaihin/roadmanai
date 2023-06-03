@@ -16,8 +16,10 @@ if __name__ == "__main__":
     # Parse the arguments
     args = parser.parse_args()
 
-    final_completion: dict[str, str] = {
-        "translate": model_response(
+    final_completion: dict[str, str] = {}
+
+    if args.type == "translate":
+        final_completion["translate"] = model_response(
             [
                 {"role": "system", "content": f"{TRANSLATE_PROMPT}"},
                 {
@@ -27,18 +29,17 @@ Roadman translation:""",
                 },
             ]
         )
-        if args.type == "translate"
-        else model_response(
+    else:
+        final_completion["translate"] = model_response(
             [
                 {"role": "system", "content": f"{ASK_PROMPT}"},
                 {
                     "role": "system",
-                    "content": f"""Sentence: {args.text}
-Phonetic translation:""",
+                    "content": f"""Original text: {args.text}
+Roadman response:""",
                 },
             ]
         )
-    }
 
     final_completion["phonetic"] = model_response(
         [

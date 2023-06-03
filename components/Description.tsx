@@ -31,8 +31,8 @@ const Description: React.FC = () => {
       <FontAwesomeIcon className="mt-1" icon={faArrowDown} />
       <div className="flex items-center">
         <h1 className="text-center text-md font-medium text-gray-600 mr-2">
-          Yo, fam! Introducin&#39; your very own personal roadman, ready to sort
-          out all your requests and ting, innit?
+          Yo, fam! Mans introducin&apos; your personal roadman, ready to sort
+          out all your request&apos; and ting, innit
         </h1>
         <FontAwesomeIcon
           className="cursor-pointer"

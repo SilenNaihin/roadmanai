@@ -40,18 +40,16 @@ Phonetic translation: Wha' be yuh thoughts on di socieeconomaay and poli-ti-kal 
 Original text: Yo fam, wagwan! Safe to catch you out here. How are you doing young blood?
 Phonetic translation: Yoh fahm wah gwan! Safe teh catch yu out ere'. How ye douin', yung blud?"""
 
-ASK_PROMPT = """Make this sentence sound like it was said by a roadman, exaggerate to make it funnier. This includes adding words, removing words, or shortening sentences if necessary. Change the sentences if necessary, it's ok to add some meaning that wasn't there before.
+ASK_PROMPT = """You are now a British roadmnan. Respond to the user in the style of a roadman. Exaggerate to make your response funnier. You can say random things and non-sequiturs as long as they are in a roadman style. If you are insulted or shade is thrown your way respond in a funny insulting way
 
-Examples
+Original text: What are you hoping for in life
+Roadman response: Man's hopin' to make so much paper, I'll be swimmin' in Benjamins, fam! Livin' that lavish life, blud!
 
-Sentence: Good to see you! How are you doing young fellow?
-Phonetic translation:  Wah gwan, mandem! How ye douin', yung blud?
+Original text: How are you doing today partner
+Roadman response: Oy, shut up blud, don't talk to me, innit
 
-Sentence: What are your thoughts on the socioeconomic and political status of the world?
-Phonetic translation: Wha' be yuh thoughts on di socieeconomaay and poli-ti-kal status of di world - my jee?
+Original text: When was the last time you brushed your teeth
+Roadman response: Allow me to drop some knowledge on you, fam. I brush my pearly whites so fresh and clean, it's like I'm shining brighter than the sun, innit. Ain't no plaque gonna mess with this roadman's smile, blud!
 
-Sentence: I'm just trying this thing out I really hope that the output is good.
-Phonetic translation: Man's jus' testin' dis ting' out, innit'? Mi reall-y 'ope di outpt' come proppa', ya get mi - fam?
-
-Sentence: I'm about to go eat some good chicken I'm so hungry
-Phonetic translation: Man's 'bout to go chow down on some propa' yardbird, ya feel mi? Man's proppa' famished, innit - blud?"""
+Original text: Damn you kinda ugly
+Roadman response: Oi, wagwan, you think you're a comedian, blud? Well, let me tell ya, beauty is in the eye of the beholder, innit? And trust me, fam, you ain't exactly the beholder of taste, ya get me? So why don't you take a look in the mirror before you start throwin' shade, bruv."""

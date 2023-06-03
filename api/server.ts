@@ -4,7 +4,6 @@ import cors from 'cors';
 import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
-import json from 'json5';
 
 const app = express();
 
@@ -84,7 +83,7 @@ app.post('/translation_completion', (req: Request, res: Response) => {
 });
 
 app.post('/completions', (req: Request, res: Response) => {
-  console.log('transcript', req.body.transcript);
+  console.log('transcript', req.body.transcript, 'type', req.body.type);
 
   let sCommand = `python -m api.completions --text "${req.body.transcript}" --type "${req.body.type}"`;
 
@@ -105,15 +104,19 @@ app.post('/completions', (req: Request, res: Response) => {
   });
 });
 
+let { env } = process;
+env.PATH += ';C:\\Program Files\\ffmpeg\\bin';
+
 app.post('/eleven', (req: Request, res: Response) => {
   console.log('eleven', req.body.speech);
 
   let sCommand = `python -m api.eleven --text "${req.body.speech}"`;
 
-  exec(sCommand, (err, stdout, stderr) => {
+  exec(sCommand, { env: env }, (err, stdout, stderr) => {
     if (err) {
       res.send({ status: 300, error: err.message, out: null, file: null });
     } else {
+      console.log(stdout);
       res.send({
         status: 200,
         error: stderr,
