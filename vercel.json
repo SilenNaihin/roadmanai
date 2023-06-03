@@ -7,21 +7,8 @@
   ],
   "routes": [
     {
-      "src": "/transribe",
-      "methods": ["POST"],
-      "dest": "/index.js"
-    },
-    {
-      "src": "/completions",
-      "headers": { "Content-Type": "application/json" },
-      "methods": ["POST"],
-      "dest": "/index.js"
-    },
-    {
-      "src": "/eleven",
-      "headers": { "Content-Type": "application/json" },
-      "methods": ["POST"],
-      "dest": "/index.js"
+      "src": "/.*",
+      "dest": "/api/server.js"
     }
   ]
 }
