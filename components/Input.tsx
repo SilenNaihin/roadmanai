@@ -22,6 +22,7 @@ const Input: React.FC = () => {
 
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
   const [translating, setTranslating] = useState<boolean>(false);
+  const [response, setResponse] = useState<boolean>(false);
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
@@ -38,13 +39,19 @@ const Input: React.FC = () => {
       formData.append('audioFile', audioFile);
 
       try {
-        const transcriptionResponse = await fetch(
-          'http://localhost:3001/transcribe',
+        const transcriptionResponse: Response = await fetch(
+          'http://localhost:3000/transcribe',
           {
             method: 'POST',
             body: formData,
           }
         );
+
+        if (!transcriptionResponse.ok) {
+          throw new Error(
+            `HTTP error! status: ${transcriptionResponse.status}`
+          );
+        }
 
         const transcriptionData = await transcriptionResponse.json();
 
@@ -52,7 +59,7 @@ const Input: React.FC = () => {
 
         console.log('transcripted', transcriptionData.transcript);
       } catch (error) {
-        console.log(error);
+        console.error('Error:', error);
       }
     };
 
@@ -77,11 +84,13 @@ const Input: React.FC = () => {
     const generateRoadman = async () => {
       if (!transcription) return;
 
+      setResponse(true);
+
       try {
         setTranslating(true);
 
-        const completionResponse = await fetch(
-          'http://localhost:3001/completions',
+        const completionResponse: Response = await fetch(
+          'http://localhost:3000/completions',
           {
             method: 'POST',
             headers: {
@@ -94,6 +103,10 @@ const Input: React.FC = () => {
           }
         );
 
+        if (!completionResponse.ok) {
+          throw new Error(`HTTP error! status: ${completionResponse.status}`);
+        }
+
         const completionData = await completionResponse.json();
 
         setTranslating(false);
@@ -105,15 +118,22 @@ const Input: React.FC = () => {
 
         setAudioPlaying(true);
 
-        const generateSpeech = await fetch('http://localhost:3001/eleven', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            speech: roadmanTalk,
-          }),
-        });
+        const generateSpeech: Response = await fetch(
+          'http://localhost:3000/eleven',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              speech: roadmanTalk,
+            }),
+          }
+        );
+
+        if (!generateSpeech.ok) {
+          throw new Error(`HTTP error! status: ${generateSpeech.status}`);
+        }
 
         const speechData = await generateSpeech.json();
 
@@ -121,7 +141,7 @@ const Input: React.FC = () => {
 
         convertResponseAudio(speechData.responseAudio);
       } catch (error) {
-        console.log(error);
+        console.error('Error:', error);
         setAudioPlaying(false);
       }
     };
@@ -130,20 +150,26 @@ const Input: React.FC = () => {
   }, [transcription]);
 
   const handleAgainClick = () => {
-    if (audioPlaying || translating) return;
-    setTranscription('');
-    setTranslation('');
-    console.log('again clicked');
-    // setResponseAudio(null);
+    if (audioPlaying || translating) {
+      console.log('audio playing or translating');
+      return;
+    }
+    console.log('we here');
+    setResponse(!response);
   };
 
   return (
     <div className="w-full h-full mt-32 flex flex-col items-center mb-16">
-      {transcription ? (
+      {response ? (
         <>
-          <button onClick={() => handleAgainClick()}>
-            <h3>More roadman pls</h3>
-          </button>
+          {responseAudio && (
+            <button onClick={() => handleAgainClick()}>
+              <h3>
+                {response ? 'New roadman response' : `Back to roadman response`}
+              </h3>
+            </button>
+          )}
+
           <ResponseBox
             transcription={transcription}
             translation={translation}
