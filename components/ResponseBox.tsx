@@ -21,6 +21,9 @@ const ResponseBox: React.FC<ResponseBoxProps> = ({
 }) => {
   const playAudio = async () => {
     if (!responseAudio) return;
+    // if (audioPlaying) {
+    //   responseAudio.pause();
+    // }
 
     setAudioPlaying(true);
 

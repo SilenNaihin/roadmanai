@@ -105,8 +105,6 @@ const Input: React.FC = () => {
 
         setAudioPlaying(true);
 
-        console.log('translated, generating speech...', roadmanTalk);
-
         const generateSpeech = await fetch('http://localhost:3001/eleven', {
           method: 'POST',
           headers: {
@@ -131,17 +129,29 @@ const Input: React.FC = () => {
     generateRoadman();
   }, [transcription]);
 
+  const handleAgainClick = () => {
+    if (audioPlaying || translating) return;
+    setTranscription('');
+    setTranslation('');
+    // setResponseAudio(null);
+  };
+
   return (
     <div className="w-full h-full mt-32 flex flex-col items-center mb-16">
       {transcription ? (
-        <ResponseBox
-          transcription={transcription}
-          translation={translation}
-          audioPlaying={audioPlaying}
-          translating={translating}
-          responseAudio={responseAudio}
-          setAudioPlaying={setAudioPlaying}
-        />
+        <>
+          <button onClick={() => handleAgainClick()}>
+            <h3>More roadman pls</h3>
+          </button>
+          <ResponseBox
+            transcription={transcription}
+            translation={translation}
+            audioPlaying={audioPlaying}
+            translating={translating}
+            responseAudio={responseAudio}
+            setAudioPlaying={setAudioPlaying}
+          />
+        </>
       ) : (
         <>
           <div className="relative inline-flex mb-2">
