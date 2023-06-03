@@ -10,7 +10,6 @@ import { NextServer, RequestHandler } from 'next/dist/server/next';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';
-console.log('NODE_ENV:', process.env.NODE_ENV);
 const nextApp: NextServer = next({ dev });
 
 console.log(nextApp);
@@ -24,7 +23,7 @@ nextApp.prepare().then(async () => {
     file?: Express.Multer.File;
   }
 
-  app.all('*', (req: Request, res: Response) => {
+  app.all('*', (req, res) => {
     const parsedUrl = parse(req.url, true);
     return nextHandler(req, res, parsedUrl);
   });
@@ -81,6 +80,7 @@ nextApp.prepare().then(async () => {
   );
 
   app.post('/completions', (req: Request, res: Response) => {
+    console.log('server response');
     let sCommand = `python -m api.completions --text "${req.body.transcript}" --type "${req.body.type}"`;
 
     exec(sCommand, (err, stdout, stderr) => {

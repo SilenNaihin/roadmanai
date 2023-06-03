@@ -133,6 +133,7 @@ const Input: React.FC = () => {
     if (audioPlaying || translating) return;
     setTranscription('');
     setTranslation('');
+    console.log('again clicked');
     // setResponseAudio(null);
   };
 
