@@ -6,7 +6,7 @@
     "dev": "nodemon -w api/server.ts api/server.ts",
     "build:next": "next build",
     "build:server": "tsc --project api/tsconfig.server.json",
-    "build": "build:next && build:server",
+    "build": "npm run build:next && npm run build:server",
     "start": "cross-env NODE_ENV=production node api/server.ts",
     "lint": "next lint"
   },
