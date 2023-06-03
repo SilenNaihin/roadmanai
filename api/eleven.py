@@ -1,7 +1,8 @@
 import argparse
 from dotenv import load_dotenv
 import os
-from elevenlabs import set_api_key, generate, play, voices
+from elevenlabs import set_api_key, generate, play
+from typing import Iterator
 
 # Load .env.local file
 load_dotenv(".env.local")
@@ -28,3 +29,13 @@ if __name__ == "__main__":
     )
 
     play(audio)  # type: ignore
+
+    if isinstance(audio, bytes):
+        hex_string = audio.hex()
+    elif isinstance(audio, Iterator):
+        audio_bytes = b"".join(list(audio))
+        hex_string = audio_bytes.hex()
+    else:
+        raise TypeError("Audio is neither a bytes object nor an iterator of bytes")
+
+    print(hex_string)

@@ -11,6 +11,9 @@ type Options = 'translate' | 'ask';
 
 const Input: React.FC = () => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
+  const [responseAudio, setResponseAudio] = useState<HTMLAudioElement | null>(
+    null
+  );
   const [translateType, setTranslateType] = useState<Options>('translate');
 
   const [transcription, setTranscription] = useState<string>('');
@@ -55,6 +58,20 @@ const Input: React.FC = () => {
 
     transcribeAudio();
   }, [audioFile]);
+
+  const convertResponseAudio = (hex_string: string) => {
+    const hexArray = hex_string.match(/.{1,2}/g);
+    const byteArray = new Uint8Array(
+      hexArray ? hexArray.map((byte) => parseInt(byte, 16)) : []
+    );
+
+    if (!byteArray) throw new Error('Invalid byte array');
+
+    const blob = new Blob([byteArray], { type: 'audio/mp3' });
+    const blobUrl = URL.createObjectURL(blob);
+    const convertedAudioResponse = new Audio(blobUrl);
+    setResponseAudio(convertedAudioResponse);
+  };
 
   useEffect(() => {
     const generateRoadman = async () => {
@@ -102,8 +119,9 @@ const Input: React.FC = () => {
 
         const speechData = await generateSpeech.json();
 
-        console.log(speechData);
         setAudioPlaying(false);
+
+        convertResponseAudio(speechData.responseAudio);
       } catch (error) {
         console.log(error);
         setAudioPlaying(false);
@@ -121,6 +139,8 @@ const Input: React.FC = () => {
           translation={translation}
           audioPlaying={audioPlaying}
           translating={translating}
+          responseAudio={responseAudio}
+          setAudioPlaying={setAudioPlaying}
         />
       ) : (
         <>

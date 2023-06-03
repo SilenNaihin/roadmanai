@@ -62,29 +62,7 @@ app.post(
   }
 );
 
-app.post('/translation_completion', (req: Request, res: Response) => {
-  console.log('transcript', req.body.transcript);
-
-  let sCommand = `python -m api.translation_completion --text "${req.body.transcript}"`;
-
-  exec(sCommand, (err, stdout, stderr) => {
-    if (err) {
-      res.send({ status: 300, error: err.message, out: null, file: null });
-    } else {
-      res.send({
-        status: 200,
-        error: stderr,
-        out: stdout,
-        file: req.file,
-        translation: stdout,
-      });
-    }
-  });
-});
-
 app.post('/completions', (req: Request, res: Response) => {
-  console.log('transcript', req.body.transcript, 'type', req.body.type);
-
   let sCommand = `python -m api.completions --text "${req.body.transcript}" --type "${req.body.type}"`;
 
   exec(sCommand, (err, stdout, stderr) => {
@@ -108,21 +86,18 @@ let { env } = process;
 env.PATH += ';C:\\Program Files\\ffmpeg\\bin';
 
 app.post('/eleven', (req: Request, res: Response) => {
-  console.log('eleven', req.body.speech);
-
   let sCommand = `python -m api.eleven --text "${req.body.speech}"`;
 
   exec(sCommand, { env: env }, (err, stdout, stderr) => {
     if (err) {
       res.send({ status: 300, error: err.message, out: null, file: null });
     } else {
-      console.log(stdout);
       res.send({
         status: 200,
         error: stderr,
         out: stdout,
         file: req.file,
-        translation: stdout,
+        responseAudio: stdout,
       });
     }
   });
@@ -130,3 +105,5 @@ app.post('/eleven', (req: Request, res: Response) => {
 
 const port = 3001;
 app.listen(port, () => console.log(`Server listening on port ${port}`));
+
+module.exports = app;
