@@ -39,7 +39,7 @@ const Input: React.FC = () => {
       formData.append('audioFile', audioFile);
 
       try {
-        const transcriptionResponse: Response = await fetch(`/transcribe`, {
+        const transcriptionResponse: Response = await fetch(`/api/transcribe`, {
           method: 'POST',
           body: formData,
         });
@@ -81,12 +81,11 @@ const Input: React.FC = () => {
     const generateRoadman = async () => {
       if (!transcription) return;
 
-      setResponse(true);
-
       try {
+        // order important, translating so they cant go back mid
         setTranslating(true);
 
-        const completionResponse: Response = await fetch(`/completions`, {
+        const completionResponse: Response = await fetch(`/api/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -112,7 +111,7 @@ const Input: React.FC = () => {
 
         setAudioPlaying(true);
 
-        const generateSpeech: Response = await fetch(`/eleven`, {
+        const generateSpeech: Response = await fetch(`api/eleven`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -145,7 +144,6 @@ const Input: React.FC = () => {
       console.log('audio playing or translating');
       return;
     }
-    console.log('we here');
     setResponse(!response);
   };
 

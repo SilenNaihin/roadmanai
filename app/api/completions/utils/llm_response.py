@@ -46,9 +46,6 @@ def model_response(
             )
             return ""
 
-        if expanded_result:
-            return result  # type: ignore
-
         return result.choices[0].message.content  # type: ignore
     except Exception as e:
         return f"{e}"

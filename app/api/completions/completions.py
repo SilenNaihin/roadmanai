@@ -1,8 +1,12 @@
 import argparse
 import json
 
-from api.utils.llm_response import model_response
-from api.utils.prompts import ASK_PROMPT, TRANSLATE_PROMPT, PHONETIC_PROMPT
+from app.api.completions.utils.llm_response import model_response
+from app.api.completions.utils.prompts import (
+    ASK_PROMPT,
+    TRANSLATE_PROMPT,
+    PHONETIC_PROMPT,
+)
 
 if __name__ == "__main__":
     # Create the parser
