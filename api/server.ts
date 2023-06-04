@@ -7,6 +7,7 @@ import fs from 'fs';
 import next from 'next';
 import { parse } from 'url';
 import { NextServer, RequestHandler } from 'next/dist/server/next';
+import serverless from 'serverless-htttp';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';
@@ -129,6 +130,8 @@ nextApp
     });
 
     app.listen(port, () => console.log(`Server listening on port ${port}`));
+
+    module.exports.handler = serverless(app);
   })
   .catch((err) => {
     console.error('Error occurred starting server:', err);
