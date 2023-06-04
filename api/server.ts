@@ -21,11 +21,6 @@ nextApp.prepare().then(async () => {
     file?: Express.Multer.File;
   }
 
-  app.all('*', (req, res) => {
-    const parsedUrl = parse(req.url, true);
-    return nextHandler(req, res, parsedUrl);
-  });
-
   // Create upload directory if it doesn't exist
   const uploadDir = path.resolve(__dirname, '../public/uploads');
 
@@ -118,6 +113,11 @@ nextApp.prepare().then(async () => {
         });
       }
     });
+  });
+
+  app.all('*', (req, res) => {
+    const parsedUrl = parse(req.url, true);
+    return nextHandler(req, res, parsedUrl);
   });
 
   app.listen(port, () => console.log(`Server listening on port ${port}`));

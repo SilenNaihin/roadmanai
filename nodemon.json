@@ -1,7 +1,7 @@
 {
   "verbose": true,
   "ignore": ["node_modules", ".next"],
-  "watch": ["api/**/*", "server.ts"],
+  "watch": ["server.ts"],
   "exec": "ts-node --project api/tsconfig.server.json api/server.ts",
   "ext": "js ts"
 }
