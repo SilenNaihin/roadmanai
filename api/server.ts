@@ -7,7 +7,7 @@ import fs from 'fs';
 import next from 'next';
 import { parse } from 'url';
 import { NextServer, RequestHandler } from 'next/dist/server/next';
-import serverless from 'serverless-htttp';
+import serverless from 'serverless-http';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';
