@@ -39,13 +39,10 @@ const Input: React.FC = () => {
       formData.append('audioFile', audioFile);
 
       try {
-        const transcriptionResponse: Response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/transcribe`,
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
+        const transcriptionResponse: Response = await fetch(`/transcribe`, {
+          method: 'POST',
+          body: formData,
+        });
 
         if (!transcriptionResponse.ok) {
           throw new Error(
@@ -89,19 +86,16 @@ const Input: React.FC = () => {
       try {
         setTranslating(true);
 
-        const completionResponse: Response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/completions`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              transcript: transcription.trimEnd(),
-              type: translateType,
-            }),
-          }
-        );
+        const completionResponse: Response = await fetch(`/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            transcript: transcription.trimEnd(),
+            type: translateType,
+          }),
+        });
 
         if (!completionResponse.ok) {
           throw new Error(`HTTP error! status: ${completionResponse.status}`);
@@ -118,18 +112,15 @@ const Input: React.FC = () => {
 
         setAudioPlaying(true);
 
-        const generateSpeech: Response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/eleven`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              speech: roadmanTalk,
-            }),
-          }
-        );
+        const generateSpeech: Response = await fetch(`/eleven`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            speech: roadmanTalk,
+          }),
+        });
 
         if (!generateSpeech.ok) {
           throw new Error(`HTTP error! status: ${generateSpeech.status}`);
