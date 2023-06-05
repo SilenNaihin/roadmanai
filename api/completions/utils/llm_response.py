@@ -1,3 +1,19 @@
+import tarfile
+import sys
+import os
+
+# Open the tar.gz file
+tar = tarfile.open("/api/imports/openai-0.27.7.tar.gz")
+
+# Extract it in a directory
+tar.extractall(path="/api/imports")
+
+# Close the tar.gz file
+tar.close()
+
+# Add the directory containing the module to the system path
+sys.path.insert(0, "/api/imports")
+
 import openai
 import os
 
