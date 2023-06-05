@@ -98,5 +98,11 @@ class handler(BaseHTTPRequestHandler):
 
             self.wfile.write(json.dumps(response, ensure_ascii=False).encode("utf-8"))
         except Exception as e:
+            print(f"stdout: {stdout}")
+            print(f"stderr: {stderr}")
+
+            json_out = json.loads(stdout.decode("utf-8").strip())
+
+            print(f"json_out: {json_out} {type(json_out)}")
             self.send_error(500, f"Failed to create response: {e}")
             return
