@@ -1,7 +1,7 @@
-class LLM_Response():
-    import os
-    import openai
+import os
+import openai
     
+class LLM_Response():
     # completion settings
     COMPLETION_MODEL = "gpt-3.5-turbo"
     TEMPERATURE = 0
@@ -12,8 +12,6 @@ class LLM_Response():
     COMPLETION_API_TIMEOUT = 10
     COMPLETION_API_TIMEOUT_ERROR_MESSAGE = "I'm sorry, I'm not able to respond to that question right now. Please try again in a bit"
 
-    # openai general settings
-    # load_dotenv()
     os.getenv("OPENAI_API_KEY")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -26,7 +24,6 @@ class LLM_Response():
         temperature: float = TEMPERATURE,
         presence_penalty: float = COMPLETION_PRESENCE_PENALTY,
         frequency_penalty: float = COMPLETION_FREQUENCY_PENALTY,
-        expanded_result: bool = False,
     ) -> str:
         try:
             kwargs = {
@@ -39,7 +36,7 @@ class LLM_Response():
                 "messages": chat,
                 "api_key": self.OPENAI_API_KEY,
             }
-            result = self.openai.ChatCompletion.create(**kwargs)
+            result = openai.ChatCompletion.create(**kwargs)
 
             if result is None:
                 print(

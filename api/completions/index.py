@@ -1,15 +1,7 @@
-import subprocess
 import json
 from http.server import BaseHTTPRequestHandler
-from os.path import join, dirname, abspath
-import openai
 
-from api.completions.utils.llm_response import LLM_Response
-from api.completions.utils.prompts import (
-    ASK_PROMPT,
-    TRANSLATE_PROMPT,
-    PHONETIC_PROMPT,
-)
+from api.completions.completions import generate_response
 
 
 class handler(BaseHTTPRequestHandler):
@@ -24,41 +16,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            llm_response  = LLM_Response()
-
-            if data["type"] == "translate":
-                translate = llm_response.model_response(
-                    chat = [
-                        {"role": "system", "content": f"{TRANSLATE_PROMPT}"},
-                        {
-                            "role": "system",
-                            "content": f"""Original  text: {data['transcript']}
-        Roadman translation:""",
-                        },
-                    ]
-                )
-            else:
-                translate = llm_response.model_response(
-                    chat=[
-                        {"role": "system", "content": f"{ASK_PROMPT}"},
-                        {
-                            "role": "system",
-                            "content": f"""Original text: {data['transcript']}
-        Roadman response:""",
-                        },
-                    ]
-                )
-
-            phonetic = llm_response.model_response(
-                chat=[
-                    {"role": "system", "content": f"{PHONETIC_PROMPT}"},
-                    {
-                        "role": "system",
-                        "content": f"""Original  text: {translate}
-        Phonetic translation: Without changing or adding any words return only the translated text that phonetically incorporates the roadman accent""",
-                    },
-                ]
-            )
+            completion = generate_response(data['type'], data['transcript'])
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
@@ -72,8 +30,8 @@ class handler(BaseHTTPRequestHandler):
             # Write the output of the script to the response
             response = {
                 "data": data,  # This is the parsed JSON from the request body
-                "translation": translate,
-                "phonetic": phonetic,
+                "translation": completion['translate'],
+                "phonetic": completion['phonetic'],
             }
 
             self.wfile.write(json.dumps(response).encode("utf-8"))

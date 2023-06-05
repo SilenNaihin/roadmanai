@@ -53,8 +53,6 @@ const Input: React.FC = () => {
         const transcriptionData = await transcriptionResponse.json();
 
         setTranscription(transcriptionData.transcript.text);
-
-        console.log('transcripted', transcriptionData);
       } catch (error) {
         console.error('Error:', error);
       }

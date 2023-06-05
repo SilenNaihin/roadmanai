@@ -1,15 +1,7 @@
 import os
-import subprocess
+from api.eleven.eleven import get_and_play_audio
 import json
 from http.server import BaseHTTPRequestHandler
-from os.path import join, dirname, abspath
-
-from elevenlabs import set_api_key, generate, play
-from typing import Iterator
-
-ELEVEN_API_KEY = os.getenv("ELEVEN_API_KEY")
-ELEVEN_CLONE_ID = os.getenv("ELEVEN_CLONE_ID")
-
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -23,24 +15,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            # Append to PATH environment variable
-            os.environ["PATH"] += ";C:\\Program Files\\ffmpeg\\bin"
-
-            audio = generate(
-                    text=data['speech'],
-                    voice=ELEVEN_CLONE_ID,  # type: ignore
-                    model="eleven_multilingual_v1",
-                )
-
-            play(audio)  # type: ignore
-
-            if isinstance(audio, bytes):
-                hex_string = audio.hex()
-            elif isinstance(audio, Iterator):
-                audio_bytes = b"".join(list(audio))
-                hex_string = audio_bytes.hex()
-            else:
-                raise TypeError("Audio is neither a bytes object nor an iterator of bytes")
+            hex_string = get_and_play_audio(data['speech'])
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
