@@ -54,7 +54,6 @@ class handler(BaseHTTPRequestHandler):
         try:
             with open(filePath, "rb") as audio_file:
                 transcript = openai.Audio.transcribe("whisper-1", audio_file)
-                print(transcript)
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return

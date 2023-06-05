@@ -15,8 +15,6 @@ def get_and_play_audio(speech: str):
         model="eleven_multilingual_v1",
     )
 
-    play(audio)  # type: ignore
-
     if isinstance(audio, bytes):
         hex_string = audio.hex()
     elif isinstance(audio, Iterator):

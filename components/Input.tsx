@@ -5,7 +5,11 @@ import AskBox from './AskBox';
 import ResponseBox from './ResponseBox';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronUp,
+  faLeftLong,
+} from '@fortawesome/free-solid-svg-icons';
 
 type Options = 'translate' | 'ask';
 
@@ -21,6 +25,7 @@ const Input: React.FC = () => {
   const [selectFocused, setSelectFocused] = useState<boolean>(false);
 
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  const [audioPaused, setAudioPaused] = useState<boolean>(false);
   const [translating, setTranslating] = useState<boolean>(false);
   const [response, setResponse] = useState<boolean>(false);
 
@@ -73,6 +78,32 @@ const Input: React.FC = () => {
     const blobUrl = URL.createObjectURL(blob);
     const convertedAudioResponse = new Audio(blobUrl);
     setResponseAudio(convertedAudioResponse);
+    return convertedAudioResponse;
+  };
+
+  const playAudio = async (audioEl: HTMLAudioElement | null) => {
+    if (!audioEl) return;
+    if (audioPlaying) {
+      audioEl.pause();
+      setAudioPaused(true);
+      setAudioPlaying(false);
+      return;
+    }
+
+    setAudioPaused(false);
+    setAudioPlaying(true);
+
+    audioEl
+      .play()
+      .then(() => {
+        audioEl.onended = () => {
+          setAudioPlaying(false);
+        };
+      })
+      .catch((error) => {
+        console.error('Error playing audio:', error);
+        setAudioPlaying(false);
+      });
   };
 
   useEffect(() => {
@@ -129,9 +160,11 @@ const Input: React.FC = () => {
 
         const speechData = await generateSpeech.json();
 
-        setAudioPlaying(false);
+        const audioEl: HTMLAudioElement = convertResponseAudio(
+          speechData.responseAudio
+        );
 
-        convertResponseAudio(speechData.responseAudio);
+        playAudio(audioEl);
       } catch (error) {
         console.error('Error:', error);
         setAudioPlaying(false);
@@ -159,15 +192,9 @@ const Input: React.FC = () => {
             audioPlaying={audioPlaying}
             translating={translating}
             responseAudio={responseAudio}
-            setAudioPlaying={setAudioPlaying}
+            playAudio={playAudio}
+            audioPaused={audioPaused}
           />
-          {responseAudio && (
-            <button onClick={() => handleAgainClick()}>
-              <h3>
-                {response ? 'New roadman response' : `Back to roadman response`}
-              </h3>
-            </button>
-          )}
         </>
       ) : (
         <>
@@ -214,6 +241,21 @@ const Input: React.FC = () => {
             />
           )}
         </>
+      )}
+      {responseAudio && (
+        <button
+          className="mt-6 flex items-center justify-center"
+          onClick={() => handleAgainClick()}
+        >
+          <FontAwesomeIcon
+            width={20}
+            height={20}
+            className="mr-4"
+            size="lg"
+            icon={faLeftLong}
+          />
+          <h3>{response ? 'New roadman response' : `Last roadman response`}</h3>
+        </button>
       )}
     </div>
   );
