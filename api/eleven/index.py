@@ -4,6 +4,12 @@ import json
 from http.server import BaseHTTPRequestHandler
 from os.path import join, dirname, abspath
 
+from elevenlabs import set_api_key, generate, play
+from typing import Iterator
+
+ELEVEN_API_KEY = os.getenv("ELEVEN_API_KEY")
+ELEVEN_CLONE_ID = os.getenv("ELEVEN_CLONE_ID")
+
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -20,22 +26,21 @@ class handler(BaseHTTPRequestHandler):
             # Append to PATH environment variable
             os.environ["PATH"] += ";C:\\Program Files\\ffmpeg\\bin"
 
-            dir = dirname(abspath(__file__))
-            script_path = join(dir, "eleven.py")
+            audio = generate(
+                    text=data['speech'],
+                    voice=ELEVEN_CLONE_ID,  # type: ignore
+                    model="eleven_multilingual_v1",
+                )
 
-            # Call your script using subprocess
-            process = subprocess.Popen(
-                [
-                    "python",
-                    "-m",
-                    "api.eleven.eleven",
-                    "--text",
-                    f"{data['speech']}",
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            stdout, stderr = process.communicate()
+            play(audio)  # type: ignore
+
+            if isinstance(audio, bytes):
+                hex_string = audio.hex()
+            elif isinstance(audio, Iterator):
+                audio_bytes = b"".join(list(audio))
+                hex_string = audio_bytes.hex()
+            else:
+                raise TypeError("Audio is neither a bytes object nor an iterator of bytes")
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
@@ -49,8 +54,7 @@ class handler(BaseHTTPRequestHandler):
             # Write the output of the script to the response
             response = {
                 "data": data,  # This is the parsed JSON from the request body
-                "responseAudio": stdout.decode("utf-8"),
-                "stderr": stderr.decode("utf-8"),  # The stderr from the subprocess
+                "responseAudio": hex_string,
             }
 
             self.wfile.write(json.dumps(response).encode("utf-8"))

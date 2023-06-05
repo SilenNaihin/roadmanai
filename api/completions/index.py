@@ -2,6 +2,14 @@ import subprocess
 import json
 from http.server import BaseHTTPRequestHandler
 from os.path import join, dirname, abspath
+import openai
+
+from api.completions.utils.llm_response import LLM_Response
+from api.completions.utils.prompts import (
+    ASK_PROMPT,
+    TRANSLATE_PROMPT,
+    PHONETIC_PROMPT,
+)
 
 
 class handler(BaseHTTPRequestHandler):
@@ -16,25 +24,41 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            # Set your script path
-            dir = dirname(abspath(__file__))
-            script_path = join(dir, "completions.py")
+            llm_response  = LLM_Response()
 
-            # Call your script using subprocess
-            process = subprocess.Popen(
-                [
-                    "python",
-                    "-m",
-                    "api.completions.completions",
-                    "--text",
-                    f"{data['transcript']}",
-                    "--type",
-                    f"{data['type']}",
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+            if data["type"] == "translate":
+                translate = llm_response.model_response(
+                    chat = [
+                        {"role": "system", "content": f"{TRANSLATE_PROMPT}"},
+                        {
+                            "role": "system",
+                            "content": f"""Original  text: {data['transcript']}
+        Roadman translation:""",
+                        },
+                    ]
+                )
+            else:
+                translate = llm_response.model_response(
+                    chat=[
+                        {"role": "system", "content": f"{ASK_PROMPT}"},
+                        {
+                            "role": "system",
+                            "content": f"""Original text: {data['transcript']}
+        Roadman response:""",
+                        },
+                    ]
+                )
+
+            phonetic = llm_response.model_response(
+                chat=[
+                    {"role": "system", "content": f"{PHONETIC_PROMPT}"},
+                    {
+                        "role": "system",
+                        "content": f"""Original  text: {translate}
+        Phonetic translation: Without changing or adding any words return only the translated text that phonetically incorporates the roadman accent""",
+                    },
+                ]
             )
-            stdout, stderr = process.communicate()
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
@@ -45,26 +69,14 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "application/json")
             self.end_headers()
 
-            # Extract the JSON portion from stdout
-            json_str = stdout.decode("utf-8").strip().split("\n")[-1]
-
-            # Parse the extracted JSON
-            json_out = json.loads(json_str)
-
             # Write the output of the script to the response
             response = {
                 "data": data,  # This is the parsed JSON from the request body
-                "translation": json_out["translate"],
-                "phonetic": json_out["phonetic"],
-                "stdout": stdout.decode("utf-8"),  # The stdout from the subprocess
-                "stderr": stderr.decode("utf-8"),  # The stderr from the subprocess
+                "translation": translate,
+                "phonetic": phonetic,
             }
 
             self.wfile.write(json.dumps(response).encode("utf-8"))
         except Exception as e:
-            print(f"stdout: {stdout}")
-            print(f"stderr: {stderr}")
-
-            json_out = json.loads(stdout.decode("utf-8").strip())
             self.send_error(500, f"Failed to create response: {e}")
             return

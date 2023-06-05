@@ -1,11 +1,8 @@
 import os
-import subprocess
 import json
 from http.server import BaseHTTPRequestHandler
-from os.path import join, dirname, abspath
-from urllib.parse import parse_qs
 import cgi
-import datetime
+import openai
 import tempfile
 
 
@@ -55,20 +52,9 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            dir = dirname(abspath(__file__))
-            script_path = join(dir, "transcribe.py")
-            # Call your script using subprocess
-            process = subprocess.Popen(
-                [
-                    "python",
-                    "api/transcribe/whisper.py",
-                    "--filePath",
-                    filePath,
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            stdout, stderr = process.communicate()
+            with open(filePath, "rb") as audio_file:
+                transcript = openai.Audio.transcribe("whisper-1", audio_file)
+                print(transcript)
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
@@ -81,28 +67,12 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "application/json")
             self.end_headers()
 
-            # Add these lines to debug stdout and stderr
-            print(f"stdout: {stdout}")
-            print(f"stderr: {stderr}")
-
-            # Parse the stdout from the script
-            json_out = json.loads(stdout.decode("utf-8").strip())
-
-            print(f"json_out: {json_out} {type(json_out)}")
-
             # Write the output of the script to the response
             response = {
-                "transcript": json_out,  # The stdout from the subprocess
-                "stderr": stderr.decode("utf-8"),  # The stderr from the subprocess
+                "transcript": transcript,  # The stdout from the subprocess
             }
 
             self.wfile.write(json.dumps(response, ensure_ascii=False).encode("utf-8"))
         except Exception as e:
-            print(f"stdout: {stdout}")
-            print(f"stderr: {stderr}")
-
-            json_out = json.loads(stdout.decode("utf-8").strip())
-
-            print(f"json_out: {json_out} {type(json_out)}")
             self.send_error(500, f"Failed to create response: {e}")
             return
