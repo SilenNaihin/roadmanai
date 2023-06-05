@@ -81,12 +81,17 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "application/json")
             self.end_headers()
 
+            # Add these lines to debug stdout and stderr
+            print(f"stdout: {stdout}")
+            print(f"stderr: {stderr}")
+
             # Parse the stdout from the script
             json_out = json.loads(stdout.decode("utf-8").strip())
 
+            print(f"json_out: {json_out} {type(json_out)}")
+
             # Write the output of the script to the response
             response = {
-                "data": ctype,
                 "transcript": json_out,  # The stdout from the subprocess
                 "stderr": stderr.decode("utf-8"),  # The stderr from the subprocess
             }
