@@ -1,5 +1,4 @@
 setuptools
 wheel
-dotenv
 openai
 elevenlabs

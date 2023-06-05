@@ -1,7 +1,5 @@
-# external
 import openai
 import os
-from dotenv import load_dotenv
 
 # completion settings
 COMPLETION_MODEL = "gpt-3.5-turbo"
@@ -14,7 +12,8 @@ COMPLETION_API_TIMEOUT = 10
 COMPLETION_API_TIMEOUT_ERROR_MESSAGE = "I'm sorry, I'm not able to respond to that question right now. Please try again in a bit"
 
 # openai general settings
-load_dotenv()
+# load_dotenv()
+os.getenv("OPENAI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 

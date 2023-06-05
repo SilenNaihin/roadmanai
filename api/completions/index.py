@@ -24,7 +24,15 @@ class handler(BaseHTTPRequestHandler):
 
             # Call your script using subprocess
             process = subprocess.Popen(
-                ["python", "-m", "api.completions.completions"],
+                [
+                    "python",
+                    "-m",
+                    "api.completions.completions",
+                    "--text",
+                    f"{data['transcript']}",
+                    "--type",
+                    f"{data['type']}",
+                ],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
