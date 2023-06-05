@@ -106,6 +106,8 @@ const Input: React.FC = () => {
 
         const completionData = await completionResponse.json();
 
+        console.log('completionData.translation', completionData.translation);
+
         setTranslating(false);
 
         const roadmanTing: string = completionData.translation;

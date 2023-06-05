@@ -1,8 +1,8 @@
 import argparse
 import json
 
-from app.api.completions.utils.llm_response import model_response
-from app.api.completions.utils.prompts import (
+from api.completions.utils.llm_response import model_response
+from api.completions.utils.prompts import (
     ASK_PROMPT,
     TRANSLATE_PROMPT,
     PHONETIC_PROMPT,
