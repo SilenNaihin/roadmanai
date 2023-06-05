@@ -1,5 +1,6 @@
 import argparse
 import json
+import openai
 
 from api.completions.utils.llm_response import model_response
 from api.completions.utils.prompts import (
