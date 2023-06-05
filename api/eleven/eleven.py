@@ -1,11 +1,10 @@
 import argparse
-from dotenv import load_dotenv
 import os
 from elevenlabs import set_api_key, generate, play
 from typing import Iterator
 
 # Load .env.local file
-load_dotenv(".env.local")
+# load_dotenv(".env.local")
 
 # Now you can access the variable
 ELEVEN_API_KEY = os.getenv("ELEVEN_API_KEY")

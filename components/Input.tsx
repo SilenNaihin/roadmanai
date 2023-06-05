@@ -36,7 +36,7 @@ const Input: React.FC = () => {
       if (!audioFile) return;
 
       const formData = new FormData();
-      formData.append('audioFile', audioFile);
+      formData.append('audioFile', audioFile, 'audio.webm');
 
       try {
         const transcriptionResponse: Response = await fetch(`/api/transcribe`, {
@@ -52,9 +52,9 @@ const Input: React.FC = () => {
 
         const transcriptionData = await transcriptionResponse.json();
 
-        setTranscription(transcriptionData.transcript);
+        setTranscription(transcriptionData.transcript.text);
 
-        console.log('transcripted', transcriptionData.transcript);
+        console.log('transcripted', transcriptionData);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -105,8 +105,6 @@ const Input: React.FC = () => {
         }
 
         const completionData = await completionResponse.json();
-
-        console.log('completionData.translation', completionData.translation);
 
         setTranslating(false);
 

@@ -15,8 +15,6 @@ class handler(BaseHTTPRequestHandler):
             self.send_error(400, f"Failed to parse JSON: {e}")
             return
 
-        print("here1", data)
-
         try:
             # Set your script path
             dir = dirname(abspath(__file__))
@@ -41,17 +39,23 @@ class handler(BaseHTTPRequestHandler):
             self.send_error(500, f"Failed to execute script: {e}")
             return
 
-        print("here2", script_path, stdout, stderr)
-
         try:
             # Respond with the data
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
 
+            # Extract the JSON portion from stdout
+            json_str = stdout.decode("utf-8").strip().split("\n")[-1]
+
+            # Parse the extracted JSON
+            json_out = json.loads(json_str)
+
             # Write the output of the script to the response
             response = {
                 "data": data,  # This is the parsed JSON from the request body
+                "translation": json_out["translate"],
+                "phonetic": json_out["phonetic"],
                 "stdout": stdout.decode("utf-8"),  # The stdout from the subprocess
                 "stderr": stderr.decode("utf-8"),  # The stderr from the subprocess
             }
