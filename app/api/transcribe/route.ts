@@ -17,7 +17,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
   }
 
-  const uploadDir = path.resolve(__dirname, '/public/uploads');
+  const uploadDir =
+    process.env.NODE_ENV == 'production'
+      ? '/tmp'
+      : path.resolve(__dirname, '/public/uploads');
   const filename = `${Date.now()}-tmp-audio.webm`;
   const filePath = path.join(uploadDir, filename);
 

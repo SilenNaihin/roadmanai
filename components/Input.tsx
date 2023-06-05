@@ -85,6 +85,10 @@ const Input: React.FC = () => {
         // order important, translating so they cant go back mid
         setTranslating(true);
 
+        setTranslation('');
+        setResponseAudio(null);
+        setResponse(true);
+
         const completionResponse: Response = await fetch(`/api/completions`, {
           method: 'POST',
           headers: {
