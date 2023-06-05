@@ -47,8 +47,10 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
   return (
     <div>
       <button className="flex items-center p-1" onClick={handleRecordingClick}>
-        <h5 className="mr-2">{recording ? 'Stop recording' : 'Record'}</h5>
+        <h5 className="mr-1">{recording ? 'Stop recording' : 'Record'}</h5>
         <FontAwesomeIcon
+          width={17}
+          height={17}
           className="cursor-pointer"
           beat={recording}
           icon={faMicrophone}

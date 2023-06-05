@@ -28,7 +28,13 @@ const Description: React.FC = () => {
 
   return (
     <>
-      <FontAwesomeIcon className="mt-1" icon={faArrowDown} />
+      <FontAwesomeIcon
+        width={20}
+        height={20}
+        size="lg"
+        className="mt-2 mb-1"
+        icon={faArrowDown}
+      />
       <div className="flex items-center">
         <h1 className="text-center text-md font-medium text-gray-600 mr-2">
           Yo, fam! Mans introducin&apos; your personal roadman, ready to sort
@@ -36,6 +42,8 @@ const Description: React.FC = () => {
         </h1>
         <FontAwesomeIcon
           className="cursor-pointer"
+          width={20}
+          height={20}
           beat={speaking}
           onClick={() => handleStreamAudio()}
           icon={faVolumeUp}

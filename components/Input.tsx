@@ -173,12 +173,16 @@ const Input: React.FC = () => {
         <>
           <div className="relative inline-flex mb-2">
             <FontAwesomeIcon
+              width={16}
+              height={16}
               className={`absolute top-0 right-0 m-3 pointer-events-none ${
                 !selectFocused ? '' : 'hidden'
               }`}
               icon={faChevronDown}
             />
             <FontAwesomeIcon
+              width={16}
+              height={16}
               className={`absolute top-0 right-0 m-3 pointer-events-none ${
                 selectFocused ? '' : 'hidden'
               }`}
