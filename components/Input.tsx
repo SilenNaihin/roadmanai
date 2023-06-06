@@ -11,14 +11,15 @@ import {
   faLeftLong,
 } from '@fortawesome/free-solid-svg-icons';
 
-type Options = 'translate' | 'ask';
+type TranslationType = 'translate' | 'ask';
 
 const Input: React.FC = () => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
   const [responseAudio, setResponseAudio] = useState<HTMLAudioElement | null>(
     null
   );
-  const [translateType, setTranslateType] = useState<Options>('translate');
+  const [translateType, setTranslateType] =
+    useState<TranslationType>('translate');
 
   const [transcription, setTranscription] = useState<string>('');
   const [translation, setTranslation] = useState<string>('');
@@ -31,40 +32,11 @@ const Input: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
+    console.log('here', text);
     if (!text) return;
 
     setTranscription(text);
   };
-
-  useEffect(() => {
-    const transcribeAudio = async () => {
-      if (!audioFile) return;
-
-      const formData = new FormData();
-      formData.append('audioFile', audioFile, 'audio.webm');
-
-      try {
-        const transcriptionResponse: Response = await fetch(`/api/transcribe`, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!transcriptionResponse.ok) {
-          throw new Error(
-            `HTTP error! status: ${transcriptionResponse.status}`
-          );
-        }
-
-        const transcriptionData = await transcriptionResponse.json();
-
-        setTranscription(transcriptionData.transcript.text);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    transcribeAudio();
-  }, [audioFile]);
 
   const convertResponseAudio = (hex_string: string) => {
     const hexArray = hex_string.match(/.{1,2}/g);
@@ -106,72 +78,117 @@ const Input: React.FC = () => {
       });
   };
 
+  const generateTranslation = async (
+    transcript: string,
+    type: TranslationType
+  ) => {
+    const response = await fetch(`/api/respond`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        transcript,
+        type,
+      }),
+    }).catch((error) => {
+      console.error('Fetch error:', error);
+    });
+
+    if (!response?.ok) {
+      throw new Error(`HTTP error! status: ${response?.status}`);
+    }
+
+    const data = response.body;
+
+    console.log(data);
+
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+
+      const chunk = decoder.decode(value);
+      const data = JSON.parse(chunk);
+
+      if (data === '[DONE]') break;
+      console.log(translation);
+      setTranslation((prev) => prev + chunk);
+    }
+
+    return translation;
+  };
+
+  const generateSpeech = async (translation: string): Promise<string> => {
+    const response: Response = await fetch(`/api/phonetic`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        translation,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const { phonetic: speech } = await response.json();
+
+    const generateSpeechResponse = await fetch(`api/eleven`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        speech,
+      }),
+    });
+
+    if (!generateSpeechResponse.ok) {
+      throw new Error(`HTTP error! status: ${generateSpeechResponse.status}`);
+    }
+
+    const { responseAudio } = await generateSpeechResponse.json();
+
+    return responseAudio;
+  };
+
   useEffect(() => {
-    const generateRoadman = async () => {
+    const handleTranslation = async () => {
       if (!transcription) return;
+      setTranslation('');
+      setResponseAudio(null);
+      setResponse(true);
 
       try {
-        // order important, translating so they cant go back mid
         setTranslating(true);
-
-        setTranslation('');
-        setResponseAudio(null);
-        setResponse(true);
-
-        const completionResponse: Response = await fetch(`/api/completions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            transcript: transcription.trimEnd(),
-            type: translateType,
-          }),
-        });
-
-        if (!completionResponse.ok) {
-          throw new Error(`HTTP error! status: ${completionResponse.status}`);
-        }
-
-        const completionData = await completionResponse.json();
-
+        await generateTranslation(transcription.trimEnd(), translateType);
         setTranslating(false);
 
-        const roadmanTing: string = completionData.translation;
-        const roadmanTalk: string = completionData.phonetic;
-
-        setTranslation(roadmanTing);
+        const responseAudio = await generateSpeech(translation);
+        const audioEl: HTMLAudioElement = convertResponseAudio(responseAudio);
 
         setAudioPlaying(true);
-
-        const generateSpeech: Response = await fetch(`api/eleven`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            speech: roadmanTalk,
-          }),
-        });
-
-        if (!generateSpeech.ok) {
-          throw new Error(`HTTP error! status: ${generateSpeech.status}`);
-        }
-
-        const speechData = await generateSpeech.json();
-
-        const audioEl: HTMLAudioElement = convertResponseAudio(
-          speechData.responseAudio
-        );
-
         playAudio(audioEl);
-      } catch (error) {
-        console.error('Error:', error);
+
+        setAudioPlaying(false);
+      } catch (err: any) {
+        console.error(err.message);
+        setTranslating(false);
         setAudioPlaying(false);
       }
     };
 
-    generateRoadman();
+    handleTranslation();
   }, [transcription]);
 
   const handleAgainClick = () => {
@@ -227,19 +244,17 @@ const Input: React.FC = () => {
               <option value="ask">Ask</option>
             </select>
           </div>
-          {translateType === 'translate' ? (
-            <AskBox
-              placeholder="Translate your text to roadman..."
-              setAudioFile={setAudioFile}
-              handleFormSubmit={handleFormSubmit}
-            />
-          ) : (
-            <AskBox
-              placeholder="Ask a roadman a question..."
-              setAudioFile={setAudioFile}
-              handleFormSubmit={handleFormSubmit}
-            />
-          )}
+          <AskBox
+            placeholder={
+              translateType === 'translate'
+                ? 'Translate your text to roadman...'
+                : 'Ask a roadman a question...'
+            }
+            setAudioFile={setAudioFile}
+            handleFormSubmit={handleFormSubmit}
+            audioFile={audioFile}
+            setTranscription={setTranscription}
+          />
         </>
       )}
       {responseAudio && (

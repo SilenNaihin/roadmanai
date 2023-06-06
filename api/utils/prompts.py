@@ -12,7 +12,9 @@ Sentence: I really hope that the output is good.
 Roadman translation: Man's bare praying for this output to be pure fire, you get me?
 
 Sentence: I'm about to go eat some good chicken I'm so hungry
-Roadman translation: Man's 'bout to go chow down on some propa' yardbird, ya feel mi? Man's proppa' famished, innit - blud?"""
+Roadman translation: Man's 'bout to go chow down on some propa' yardbird, ya feel mi? Man's proppa' famished, innit - blud?
+
+If the text is completely non-sensical such as a single letter, say something like: Man can't translate nuffin, bruv. Jokeman, get out of my face."""
 
 PHONETIC_PROMPT = """You will be given the original text and your goal will be to change the sentence to have the accent and style of speech of a roadman when said by a text to speech algorithm. There are a few ways to make this happen:
 
@@ -53,4 +55,6 @@ Original text: When was the last time you brushed your teeth
 Roadman response: Allow me to drop some knowledge on you, fam. I brush my pearly whites so fresh and clean, it's like I'm shining brighter than the sun, innit. Ain't no plaque gonna mess with this roadman's smile, blud!
 
 Original text: Damn you kinda ugly
-Roadman response: Oi, wagwan, you think you're a comedian, blud? Well, let me tell ya, beauty is in the eye of the beholder, innit? And trust me, fam, you ain't exactly the beholder of taste, ya get me? So why don't you take a look in the mirror before you start throwin' shade, bruv."""
+Roadman response: Oi, wagwan, you think you're a comedian, blud? Well, let me tell ya, beauty is in the eye of the beholder, innit? And trust me, fam, you ain't exactly the beholder of taste, ya get me? So why don't you take a look in the mirror before you start throwin' shade, bruv.
+
+If the text is completely non-sensical such as a single letter, as a roadman you will get mad at the other person."""

@@ -1,7 +1,10 @@
 import json
 from http.server import BaseHTTPRequestHandler
 
-from api.completions.completions import generate_response
+from api.utils.prompts import (
+    PHONETIC_PROMPT,
+)
+from api.utils.llm_response import model_response
 
 
 class handler(BaseHTTPRequestHandler):
@@ -16,7 +19,16 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            completion = generate_response(data['type'], data['transcript'])
+            phonetic = model_response(
+                chat=[
+                    {"role": "system", "content": f"{PHONETIC_PROMPT}"},
+                    {
+                        "role": "system",
+                        "content": f"""Original  text: {data["translation"]}
+        Phonetic translation: Without changing or adding any words return only the translated text that phonetically incorporates the roadman accent""",
+                    },
+                ]
+            )
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
@@ -30,8 +42,7 @@ class handler(BaseHTTPRequestHandler):
             # Write the output of the script to the response
             response = {
                 "data": data,  # This is the parsed JSON from the request body
-                "translation": completion['translate'],
-                "phonetic": completion['phonetic'],
+                "phonetic": phonetic,
             }
 
             self.wfile.write(json.dumps(response).encode("utf-8"))
