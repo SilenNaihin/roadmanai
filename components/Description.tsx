@@ -4,7 +4,12 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
-const Description: React.FC = () => {
+import { ParentProps } from './Parent';
+
+const Description: React.FC<ParentProps> = ({
+  translateType,
+  setTranslateType,
+}) => {
   const [speaking, setSpeaking] = useState<boolean>(false);
 
   const handleStreamAudio = () => {
@@ -12,7 +17,10 @@ const Description: React.FC = () => {
 
     setSpeaking(true);
 
-    const audio = new Audio('/sample.mp3');
+    const audio =
+      translateType === 'translate'
+        ? new Audio('/translate.mp3')
+        : new Audio('/ask.mp3');
 
     audio.onended = () => {
       setSpeaking(false);
@@ -27,7 +35,12 @@ const Description: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="rounded-xl flex flex-col items-center p-4 mt-2">
+      <h1 className="text-center text-md font-medium text-gray-600">
+        {translateType == 'ask'
+          ? 'When was the last time you brushed your teeth'
+          : 'Your own personal roadman to respond to your requests and needs'}
+      </h1>
       <FontAwesomeIcon
         width={20}
         height={20}
@@ -37,20 +50,22 @@ const Description: React.FC = () => {
       />
       <div className="flex items-center">
         <h1 className="text-center text-md font-medium text-gray-600 mr-2">
-          Yo, fam! Mans introducin&apos; your personal roadman, ready to sort
-          out all your request&apos; and ting, innit
+          {translateType == 'ask'
+            ? "Allow me to drop some knowledge on you, fam. I brush my pearly whites so fresh and clean, it's like I'm shining brighter than the sun, innit. Ain't no plaque gonna mess with this roadman's smile, blud!"
+            : "Yo, fam! Mans introducin' your personal roadman, ready to sort out all your request's and ting, innit"}
         </h1>
         <FontAwesomeIcon
           className="cursor-pointer"
-          width={20}
-          height={20}
+          size="xl"
+          width={22}
+          height={22}
           beat={speaking}
           onClick={() => handleStreamAudio()}
           icon={faVolumeUp}
           style={{ color: speaking ? 'red' : 'black' }}
         />
       </div>
-    </>
+    </div>
   );
 };
 

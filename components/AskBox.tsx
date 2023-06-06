@@ -67,7 +67,7 @@ const AskBox: React.FC<AskBoxProps> = ({
       <div className="w-full flex justify-between items-center">
         <AudioRecorder setAudioFile={setAudioFile} setLoading={setLoading} />
         <button
-          className="bg-black text-white font-medium rounded p-1"
+          className="drop-shadow hover:transition-all hover:drop-shadow-xl text-white font-medium rounded py-1 px-2 bg-black"
           type="submit"
         >
           Submit

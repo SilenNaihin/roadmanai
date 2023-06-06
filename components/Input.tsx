@@ -3,24 +3,21 @@
 import React, { useEffect, useState } from 'react';
 import AskBox from './AskBox';
 import ResponseBox from './ResponseBox';
+import { TranslationType, ParentProps } from './Parent';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronDown,
   faChevronUp,
-  faLeftLong,
+  faRightLong,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
 
-type TranslationType = 'translate' | 'ask';
-
-const Input: React.FC = () => {
+const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
   const [responseAudio, setResponseAudio] = useState<HTMLAudioElement | null>(
     null
   );
-  const [translateType, setTranslateType] =
-    useState<TranslationType>('translate');
 
   const [transcription, setTranscription] = useState<string>('');
   const [translation, setTranslation] = useState<string>('');
@@ -187,7 +184,7 @@ const Input: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full mt-32 flex flex-col items-center mb-16 justify-center">
+    <div className="w-full h-full mt-24 flex flex-col items-center justify-center">
       {response ? (
         <>
           <ResponseBox
@@ -205,13 +202,14 @@ const Input: React.FC = () => {
         <FontAwesomeIcon className="px-6" size="2xl" spin icon={faGear} />
       ) : (
         <>
-          <div className="relative inline-flex mb-2">
+          <div className="relative inline-flex mb-2 pb-4">
             <FontAwesomeIcon
               width={16}
               height={16}
               className={`absolute top-0 right-0 m-3 pointer-events-none ${
                 !selectFocused ? '' : 'hidden'
               }`}
+              color="white"
               icon={faChevronDown}
             />
             <FontAwesomeIcon
@@ -220,6 +218,7 @@ const Input: React.FC = () => {
               className={`absolute top-0 right-0 m-3 pointer-events-none ${
                 selectFocused ? '' : 'hidden'
               }`}
+              color="white"
               icon={faChevronUp}
             />
             <select
@@ -228,10 +227,18 @@ const Input: React.FC = () => {
               onChange={(e) =>
                 setTranslateType(e.target.value as 'translate' | 'ask')
               }
-              className="border border-gray-300 rounded-full h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none font-bold"
+              className="border text-white rounded-full h-10 pl-5 pr-10 bg-white focus:outline-none appearance-none font-bold"
+              style={{
+                background:
+                  'linear-gradient(to bottom right, #0088cc, #663399)',
+              }}
             >
-              <option value="translate">Translate</option>
-              <option value="ask">Ask</option>
+              <option className="text-black" value="ask">
+                Ask
+              </option>
+              <option className="text-black" value="translate">
+                Translate
+              </option>
             </select>
           </div>
           <AskBox
@@ -253,14 +260,16 @@ const Input: React.FC = () => {
           className="mt-6 flex items-center justify-center"
           onClick={() => handleAgainClick()}
         >
+          <h5 className="font-medium">
+            {response ? 'New roadman response' : `Last roadman response`}
+          </h5>
           <FontAwesomeIcon
             width={20}
             height={20}
-            className="mr-4"
+            className="ml-4"
             size="lg"
-            icon={faLeftLong}
+            icon={faRightLong}
           />
-          <h3>{response ? 'New roadman response' : `Last roadman response`}</h3>
         </button>
       )}
     </div>

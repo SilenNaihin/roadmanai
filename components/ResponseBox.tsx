@@ -49,7 +49,9 @@ const ResponseBox: React.FC<ResponseBoxProps> = ({
             size="2xl"
             icon={faVolumeUp}
             onClick={() => playAudio(responseAudio)}
-            style={{ color: audioPlaying || audioPaused ? 'red' : 'black' }}
+            style={{
+              color: audioPlaying || audioPaused ? 'red' : 'black',
+            }}
           />
         )
       )}

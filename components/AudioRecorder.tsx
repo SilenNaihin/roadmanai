@@ -50,8 +50,13 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
 
   return (
     <div>
-      <button className="flex items-center p-1" onClick={handleRecordingClick}>
-        <h5 className="mr-1">{recording ? 'Stop recording' : 'Record'}</h5>
+      <button
+        className="hover:drop-shadow-xl flex items-center p-1"
+        onClick={handleRecordingClick}
+      >
+        <h5 className="mr-1 font-medium">
+          {recording ? 'Stop recording' : 'Record'}
+        </h5>
         <FontAwesomeIcon
           width={17}
           height={17}
