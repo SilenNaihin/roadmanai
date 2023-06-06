@@ -7,6 +7,7 @@ interface AskBoxProps {
   placeholder: string;
   audioFile: Blob | null;
   setTranscription: React.Dispatch<React.SetStateAction<string>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AskBox: React.FC<AskBoxProps> = ({
@@ -15,6 +16,7 @@ const AskBox: React.FC<AskBoxProps> = ({
   placeholder,
   audioFile,
   setTranscription,
+  setLoading,
 }) => {
   const [text, setText] = useState<string>('');
 
@@ -39,7 +41,9 @@ const AskBox: React.FC<AskBoxProps> = ({
       if (!audioFile) return;
 
       try {
+        setLoading(true);
         const transcriptionData = await transcribe(audioFile);
+        setLoading(false);
         setTranscription(transcriptionData.transcript.text);
       } catch (error) {
         console.error('Error:', error);
@@ -59,16 +63,16 @@ const AskBox: React.FC<AskBoxProps> = ({
           placeholder={placeholder}
           name="translate"
         />
-        <div className="flex justify-between items-center">
-          <AudioRecorder setAudioFile={setAudioFile} />
-          <button
-            className="bg-black text-white font-medium rounded p-1"
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
       </form>
+      <div className="w-full flex justify-between items-center">
+        <AudioRecorder setAudioFile={setAudioFile} setLoading={setLoading} />
+        <button
+          className="bg-black text-white font-medium rounded p-1"
+          type="submit"
+        >
+          Submit
+        </button>
+      </div>
     </div>
   );
 };

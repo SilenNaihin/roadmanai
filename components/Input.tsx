@@ -9,6 +9,7 @@ import {
   faChevronDown,
   faChevronUp,
   faLeftLong,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 
 type TranslationType = 'translate' | 'ask';
@@ -29,6 +30,8 @@ const Input: React.FC = () => {
   const [audioPaused, setAudioPaused] = useState<boolean>(false);
   const [translating, setTranslating] = useState<boolean>(false);
   const [response, setResponse] = useState<boolean>(false);
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
@@ -99,29 +102,7 @@ const Input: React.FC = () => {
       throw new Error(`HTTP error! status: ${response?.status}`);
     }
 
-    const data = response.body;
-
-    console.log(data);
-
-    if (!data) {
-      return;
-    }
-
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-
-      const chunk = decoder.decode(value);
-      const data = JSON.parse(chunk);
-
-      if (data === '[DONE]') break;
-      console.log(translation);
-      setTranslation((prev) => prev + chunk);
-    }
+    const { translation } = await response.json();
 
     return translation;
   };
@@ -136,6 +117,8 @@ const Input: React.FC = () => {
         translation,
       }),
     });
+
+    setLoading(false);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -171,16 +154,20 @@ const Input: React.FC = () => {
 
       try {
         setTranslating(true);
-        await generateTranslation(transcription.trimEnd(), translateType);
+        const translation = await generateTranslation(
+          transcription.trimEnd(),
+          translateType
+        );
+        setTranslation(translation);
         setTranslating(false);
+
+        setLoading(true);
 
         const responseAudio = await generateSpeech(translation);
         const audioEl: HTMLAudioElement = convertResponseAudio(responseAudio);
 
-        setAudioPlaying(true);
+        setLoading(false);
         playAudio(audioEl);
-
-        setAudioPlaying(false);
       } catch (err: any) {
         console.error(err.message);
         setTranslating(false);
@@ -200,7 +187,7 @@ const Input: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full mt-32 flex flex-col items-center mb-16">
+    <div className="w-full h-full mt-32 flex flex-col items-center mb-16 justify-center">
       {response ? (
         <>
           <ResponseBox
@@ -211,8 +198,11 @@ const Input: React.FC = () => {
             responseAudio={responseAudio}
             playAudio={playAudio}
             audioPaused={audioPaused}
+            loading={loading}
           />
         </>
+      ) : loading ? (
+        <FontAwesomeIcon className="px-6" size="2xl" spin icon={faGear} />
       ) : (
         <>
           <div className="relative inline-flex mb-2">
@@ -254,10 +244,11 @@ const Input: React.FC = () => {
             handleFormSubmit={handleFormSubmit}
             audioFile={audioFile}
             setTranscription={setTranscription}
+            setLoading={setLoading}
           />
         </>
       )}
-      {responseAudio && (
+      {responseAudio && !loading && (
         <button
           className="mt-6 flex items-center justify-center"
           onClick={() => handleAgainClick()}

@@ -39,15 +39,6 @@ def model_response(
             "api_key": OPENAI_API_KEY,
             "stream": stream,
         }
-        print("starting streaming")
-        if stream and http_req:
-            for chunk in openai.ChatCompletion.create(**kwargs):
-                if chunk.choices[0].delta.get("content"):  # type: ignore
-                    text = chunk.choices[0].delta.content  # type: ignore
-                    print(text)
-                    http_req.wfile.write(f"{text}\n\n".encode("utf-8"))
-                    http_req.wfile.flush()
-            return ""
 
         result = openai.ChatCompletion.create(**kwargs)
 
@@ -59,7 +50,4 @@ def model_response(
 
         return result.choices[0].message.content  # type: ignore
     except Exception as e:
-        if http_req:
-            http_req.send_error(500, f"Failed to create response: {str(e)}")
-            return ""
         return f"{e}"
