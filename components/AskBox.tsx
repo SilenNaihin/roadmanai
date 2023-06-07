@@ -8,6 +8,8 @@ interface AskBoxProps {
   audioFile: Blob | null;
   setTranscription: React.Dispatch<React.SetStateAction<string>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  newResponse: boolean;
+  setNewResponse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AskBox: React.FC<AskBoxProps> = ({
@@ -17,6 +19,8 @@ const AskBox: React.FC<AskBoxProps> = ({
   audioFile,
   setTranscription,
   setLoading,
+  newResponse,
+  setNewResponse,
 }) => {
   const [text, setText] = useState<string>('');
 
@@ -38,7 +42,7 @@ const AskBox: React.FC<AskBoxProps> = ({
 
   useEffect(() => {
     const transcribeAudio = async () => {
-      if (!audioFile) return;
+      if (!audioFile || newResponse) return;
 
       try {
         setLoading(true);
@@ -47,6 +51,7 @@ const AskBox: React.FC<AskBoxProps> = ({
         setTranscription(transcriptionData.transcript.text);
       } catch (error) {
         console.error('Error:', error);
+        setLoading(false);
       }
     };
 
@@ -55,18 +60,20 @@ const AskBox: React.FC<AskBoxProps> = ({
 
   return (
     <div className="w-1/2 flex flex-col">
-      <form className="w-full" onSubmit={(e) => handleFormSubmit(e, text)}>
-        <textarea
-          className="hover:border-gray-400 border-gray-300 px-2 py-1 border w-full h-24 resize-none rounded-xl"
-          onChange={(e) => setText(e.target.value)}
-          value={text}
-          placeholder={placeholder}
-          name="translate"
+      <textarea
+        className="hover:border-gray-400 border-gray-300 px-2 py-1 border w-full h-24 resize-none rounded-xl"
+        onChange={(e) => setText(e.target.value)}
+        value={text}
+        placeholder={placeholder}
+        name="translate"
+      />
+      <div className="mt-2 w-full flex justify-between items-center">
+        <AudioRecorder
+          setAudioFile={setAudioFile}
+          setNewResponse={setNewResponse}
         />
-      </form>
-      <div className="w-full flex justify-between items-center">
-        <AudioRecorder setAudioFile={setAudioFile} setLoading={setLoading} />
         <button
+          onClick={(e) => handleFormSubmit(e, text)}
           className="drop-shadow hover:transition-all hover:drop-shadow-xl text-white font-medium rounded py-1 px-2 bg-black"
           type="submit"
         >

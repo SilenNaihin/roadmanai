@@ -29,10 +29,10 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
   const [response, setResponse] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [newResponse, setNewResponse] = useState<boolean>(false);
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
-    console.log('here', text);
     if (!text) return;
 
     setTranscription(text);
@@ -180,6 +180,7 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
       console.log('audio playing or translating');
       return;
     }
+
     setResponse(!response);
   };
 
@@ -252,6 +253,8 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
             audioFile={audioFile}
             setTranscription={setTranscription}
             setLoading={setLoading}
+            newResponse={newResponse}
+            setNewResponse={setNewResponse}
           />
         </>
       )}
