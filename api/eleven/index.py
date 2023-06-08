@@ -3,6 +3,7 @@ from api.eleven.eleven import get_and_play_audio
 import json
 from http.server import BaseHTTPRequestHandler
 
+
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
@@ -15,7 +16,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            hex_string = get_and_play_audio(data['speech'])
+            hex_string = get_and_play_audio(data["speech"])
         except Exception as e:
             self.send_error(500, f"Failed to execute script: {e}")
             return
