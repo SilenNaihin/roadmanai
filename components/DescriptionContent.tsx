@@ -7,12 +7,15 @@ import { TranslationType } from './Parent';
 
 interface DescriptionContentProps {
   translateType: TranslationType;
+  speaking: boolean;
+  setSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DescriptionContent: React.FC<DescriptionContentProps> = ({
   translateType,
+  speaking,
+  setSpeaking,
 }) => {
-  const [speaking, setSpeaking] = useState<boolean>(false);
   const handleStreamAudio = () => {
     if (speaking) return;
 

@@ -12,6 +12,7 @@ interface DescriptionProps {
 const Description: React.FC<DescriptionProps> = ({ translateType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const divRef = useRef<HTMLDivElement | null>(null);
+  const [speaking, setSpeaking] = useState<boolean>(false);
 
   // add this useEffect hook
   useEffect(() => {
@@ -55,13 +56,21 @@ const Description: React.FC<DescriptionProps> = ({ translateType }) => {
           className="transition-all absolute top-full duration-1000 ease-in-out overflow-hidden"
         >
           <div className="p-4 bg-purple-100 mt-2 rounded-xl flex flex-col items-center">
-            <DescriptionContent translateType={translateType} />
+            <DescriptionContent
+              speaking={speaking}
+              setSpeaking={setSpeaking}
+              translateType={translateType}
+            />
           </div>
         </div>
       </div>
 
       <div className="flex-col items-center hidden md:flex">
-        <DescriptionContent translateType={translateType} />
+        <DescriptionContent
+          speaking={speaking}
+          setSpeaking={setSpeaking}
+          translateType={translateType}
+        />
       </div>
     </div>
   );
