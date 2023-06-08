@@ -59,7 +59,7 @@ const DescriptionContent: React.FC<DescriptionContentProps> = ({
             : "Yo, fam! Mans introducin' your personal roadman, ready to sort out all your request's and ting, innit"}
         </h1>
         <FontAwesomeIcon
-          className="cursor-pointer"
+          className="cursor-pointer hidden md:block"
           width={22}
           height={22}
           size="xl"
@@ -69,6 +69,16 @@ const DescriptionContent: React.FC<DescriptionContentProps> = ({
           style={{ color: speaking ? 'red' : 'black' }}
         />
       </div>
+      <FontAwesomeIcon
+        className="cursor-pointer mt-2 sm:hidden"
+        width={22}
+        height={22}
+        size="xl"
+        beat={speaking}
+        onClick={() => handleStreamAudio()}
+        icon={faVolumeUp}
+        style={{ color: speaking ? 'red' : 'black' }}
+      />
     </>
   );
 };
