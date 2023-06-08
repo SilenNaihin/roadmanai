@@ -39,7 +39,7 @@ const Description: React.FC<DescriptionProps> = ({ translateType }) => {
     <div className="z-10 flex flex-col items-center p-4 mt-2 w-full">
       <div className="md:hidden flex flex-col items-center justify-center relative">
         <button
-          className="font-medium text-white py-2 px-8 rounded"
+          className="font-medium text-white py-2 px-8 rounded-xl"
           onClick={() => setIsOpen(!isOpen)}
           style={{
             background: 'linear-gradient(to bottom right, #0088cc, #663399)',

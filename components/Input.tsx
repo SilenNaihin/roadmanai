@@ -12,8 +12,10 @@ import {
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import ResponseBottom from './ResponseBottom';
+import useWindowSize from '@/hooks/useWindowSize';
 
 const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
+  const { width } = useWindowSize();
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
   const [responseAudio, setResponseAudio] = useState<HTMLAudioElement | null>(
     null
@@ -233,7 +235,7 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
               className={`absolute top-0 right-0 m-3 pointer-events-none ${
                 !selectFocused ? '' : 'hidden'
               }`}
-              color="white"
+              color={width && width > 768 ? 'white' : 'black'}
               icon={faChevronDown}
             />
             <FontAwesomeIcon
@@ -242,7 +244,7 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
               className={`absolute top-0 right-0 m-3 pointer-events-none ${
                 selectFocused ? '' : 'hidden'
               }`}
-              color="white"
+              color={width && width > 768 ? 'white' : 'black'}
               icon={faChevronUp}
             />
             <select
@@ -251,10 +253,12 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
               onChange={(e) =>
                 setTranslateType(e.target.value as 'translate' | 'ask')
               }
-              className="border text-white rounded-full h-10 pl-5 pr-10 bg-white focus:outline-none appearance-none font-bold"
+              className="border text-black md:text-white rounded-full h-10 pl-5 pr-10 bg-white focus:outline-none appearance-none font-bold"
               style={{
                 background:
-                  'linear-gradient(to bottom right, #0088cc, #663399)',
+                  width && width > 768
+                    ? 'linear-gradient(to bottom right, #0088cc, #663399)'
+                    : '',
               }}
             >
               <option className="text-black" value="ask">

@@ -51,12 +51,13 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
         className="hover:drop-shadow-xl flex items-center p-1"
         onClick={handleRecordingClick}
       >
-        <h5 className="mr-1 font-medium">
+        <h5 className="mr-2 md:text-lg font-medium">
           {recording ? 'Stop recording' : 'Record'}
         </h5>
         <FontAwesomeIcon
-          width={17}
-          height={17}
+          width={20}
+          height={20}
+          size="lg"
           className="cursor-pointer"
           beat={recording}
           icon={faMicrophone}

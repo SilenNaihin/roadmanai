@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AudioRecorder from './AudioRecorder';
+import useWindowSize from '@/hooks/useWindowSize';
 
 interface AskBoxProps {
   setAudioFile: React.Dispatch<React.SetStateAction<Blob | null>>;
@@ -14,6 +15,8 @@ const AskBox: React.FC<AskBoxProps> = ({
 }) => {
   const [text, setText] = useState<string>('');
 
+  const { width } = useWindowSize();
+
   return (
     <div className="w-11/12 sm:w-4/5 md:w-3/5 lg:w-1/2 flex flex-col">
       <textarea
@@ -27,7 +30,13 @@ const AskBox: React.FC<AskBoxProps> = ({
         <AudioRecorder setAudioFile={setAudioFile} />
         <button
           onClick={(e) => handleFormSubmit(e, text)}
-          className="drop-shadow hover:transition-all hover:drop-shadow-xl text-white font-medium rounded py-1 px-2 bg-black"
+          style={{
+            background:
+              width && width < 768
+                ? 'linear-gradient(to bottom right, #0088cc, #663399)'
+                : 'black',
+          }}
+          className="drop-shadow hover:transition-all hover:drop-shadow-xl text-white font-medium rounded py-1 px-3 bg-black"
           type="submit"
         >
           Submit
