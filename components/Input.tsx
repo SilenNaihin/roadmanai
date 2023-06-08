@@ -9,9 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronDown,
   faChevronUp,
-  faRightLong,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
+import ResponseBottom from './ResponseBottom';
 
 const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
   const [audioFile, setAudioFile] = useState<Blob | null>(null);
@@ -29,7 +29,6 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
   const [response, setResponse] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [newResponse, setNewResponse] = useState<boolean>(false);
 
   const handleFormSubmit = async (e: React.FormEvent, text: string) => {
     e.preventDefault();
@@ -37,6 +36,40 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
 
     setTranscription(text);
   };
+
+  const transcribe = async (audioFile: Blob) => {
+    const formData = new FormData();
+    formData.append('audioFile', audioFile, 'audio.webm');
+
+    const transcriptionResponse = await fetch(`/api/transcribe`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!transcriptionResponse.ok) {
+      throw new Error(`HTTP error! status: ${transcriptionResponse.status}`);
+    }
+
+    return await transcriptionResponse.json();
+  };
+
+  useEffect(() => {
+    const transcribeAudio = async () => {
+      if (!audioFile) return;
+
+      try {
+        setLoading(true);
+        const transcriptionData = await transcribe(audioFile);
+        setLoading(false);
+        setTranscription(transcriptionData.transcript.text);
+      } catch (error) {
+        console.error('Error:', error);
+        setLoading(false);
+      }
+    };
+
+    transcribeAudio();
+  }, [audioFile]);
 
   const convertResponseAudio = (hex_string: string) => {
     const hexArray = hex_string.match(/.{1,2}/g);
@@ -55,27 +88,26 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
 
   const playAudio = async (audioEl: HTMLAudioElement | null) => {
     if (!audioEl) return;
-    if (audioPlaying) {
-      audioEl.pause();
-      setAudioPaused(true);
-      setAudioPlaying(false);
-      return;
-    }
+    try {
+      if (audioPlaying) {
+        audioEl.pause();
+        setAudioPaused(true);
+        setAudioPlaying(false);
+        return;
+      }
 
-    setAudioPaused(false);
-    setAudioPlaying(true);
+      setAudioPaused(false);
+      setAudioPlaying(true);
 
-    audioEl
-      .play()
-      .then(() => {
+      audioEl.play().then(() => {
         audioEl.onended = () => {
           setAudioPlaying(false);
         };
-      })
-      .catch((error) => {
-        console.error('Error playing audio:', error);
-        setAudioPlaying(false);
       });
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      setAudioPlaying(false);
+    }
   };
 
   const generateTranslation = async (
@@ -175,17 +207,8 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
     handleTranslation();
   }, [transcription]);
 
-  const handleAgainClick = () => {
-    if (audioPlaying || translating) {
-      console.log('audio playing or translating');
-      return;
-    }
-
-    setResponse(!response);
-  };
-
   return (
-    <div className="w-full h-full mt-24 flex flex-col items-center justify-center">
+    <div className="w-full h-full lg:px-12 md:px-4 flex flex-col items-center justify-center">
       {response ? (
         <>
           <ResponseBox
@@ -250,30 +273,18 @@ const Input: React.FC<ParentProps> = ({ translateType, setTranslateType }) => {
             }
             setAudioFile={setAudioFile}
             handleFormSubmit={handleFormSubmit}
-            audioFile={audioFile}
-            setTranscription={setTranscription}
-            setLoading={setLoading}
-            newResponse={newResponse}
-            setNewResponse={setNewResponse}
           />
         </>
       )}
       {responseAudio && !loading && (
-        <button
-          className="mt-6 flex items-center justify-center"
-          onClick={() => handleAgainClick()}
-        >
-          <h5 className="font-medium">
-            {response ? 'New roadman response' : `Last roadman response`}
-          </h5>
-          <FontAwesomeIcon
-            width={20}
-            height={20}
-            className="ml-4"
-            size="lg"
-            icon={faRightLong}
-          />
-        </button>
+        <ResponseBottom
+          response={response}
+          audioPlaying={audioPlaying}
+          translating={translating}
+          setResponse={setResponse}
+          audioEl={responseAudio}
+          transcription={transcription}
+        />
       )}
     </div>
   );

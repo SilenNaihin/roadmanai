@@ -17,12 +17,11 @@ const Parent: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center">
-        <h1 className="text-4xl font-bold p-2">Roadman Translator</h1>
-        <Description
-          translateType={translateType}
-          setTranslateType={setTranslateType}
-        />
+      <div className="flex flex-col items-center justify-evenly">
+        <h1 className="text-3xl text-center sm:text-4xl font-bold p-2">
+          Roadman AI
+        </h1>
+        <Description translateType={translateType} />
       </div>
       <Input
         translateType={translateType}

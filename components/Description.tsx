@@ -1,69 +1,67 @@
 'use client';
 
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useRef, useEffect } from 'react';
+import DescriptionContent from './DescriptionContent';
 
-import { ParentProps } from './Parent';
+import { TranslationType } from './Parent';
 
-const Description: React.FC<ParentProps> = ({
-  translateType,
-  setTranslateType,
-}) => {
-  const [speaking, setSpeaking] = useState<boolean>(false);
+interface DescriptionProps {
+  translateType: TranslationType;
+}
 
-  const handleStreamAudio = () => {
-    if (speaking) return;
+const Description: React.FC<DescriptionProps> = ({ translateType }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
-    setSpeaking(true);
-
-    const audio =
-      translateType === 'translate'
-        ? new Audio('/translate.mp3')
-        : new Audio('/ask.mp3');
-
-    audio.onended = () => {
-      setSpeaking(false);
-    };
-
-    audio.onerror = () => {
-      console.error('Failed to play audio');
-      setSpeaking(false);
-    };
-
-    audio.play();
-  };
+  // add this useEffect hook
+  useEffect(() => {
+    if (divRef.current) {
+      if (isOpen) {
+        divRef.current.style.maxHeight = '1000px'; // You may adjust this value as needed.
+        const timeoutId = window.setTimeout(() => {
+          divRef.current!.style.maxHeight = 'auto';
+        }, 500); // Transition duration.
+        return () => clearTimeout(timeoutId);
+      } else {
+        // Before setting maxHeight to '0', we need to have a fixed maxHeight for the transition.
+        // We can't transition from 'auto' to '0'.
+        divRef.current.style.maxHeight = `${divRef.current.scrollHeight}px`;
+        const timeoutId = window.setTimeout(() => {
+          divRef.current!.style.maxHeight = '0';
+        }, 0); // No delay.
+        return () => clearTimeout(timeoutId);
+      }
+    }
+  }, [isOpen]);
 
   return (
-    <div className="rounded-xl flex flex-col items-center p-4 mt-2">
-      <h1 className="text-center text-md font-medium text-gray-600">
-        {translateType == 'ask'
-          ? 'When was the last time you brushed your teeth'
-          : 'Your own personal roadman to respond to your requests and needs'}
-      </h1>
-      <FontAwesomeIcon
-        width={20}
-        height={20}
-        size="lg"
-        className="mt-2 mb-1"
-        icon={faArrowDown}
-      />
-      <div className="flex items-center">
-        <h1 className="text-center text-md font-medium text-gray-600 mr-2">
-          {translateType == 'ask'
-            ? "Allow me to drop some knowledge on you, fam. I brush my pearly whites so fresh and clean, it's like I'm shining brighter than the sun, innit. Ain't no plaque gonna mess with this roadman's smile, blud!"
-            : "Yo, fam! Mans introducin' your personal roadman, ready to sort out all your request's and ting, innit"}
-        </h1>
-        <FontAwesomeIcon
-          className="cursor-pointer"
-          size="xl"
-          width={22}
-          height={22}
-          beat={speaking}
-          onClick={() => handleStreamAudio()}
-          icon={faVolumeUp}
-          style={{ color: speaking ? 'red' : 'black' }}
-        />
+    <div className="z-10 flex flex-col items-center p-4 mt-2 w-full">
+      <div className="md:hidden flex flex-col items-center justify-center relative">
+        <button
+          className="font-medium text-white py-2 px-8 rounded"
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            background: 'linear-gradient(to bottom right, #0088cc, #663399)',
+          }}
+        >
+          Example {translateType == 'translate' ? 'translation' : 'ask'}
+        </button>
+        <div
+          ref={divRef}
+          style={{
+            maxHeight: isOpen ? 'auto' : '0',
+            width: '80vw', // 80vw represents 80% of the width of the viewport
+          }}
+          className="transition-all absolute top-full duration-1000 ease-in-out overflow-hidden"
+        >
+          <div className="p-4 bg-purple-100 mt-2 rounded-xl flex flex-col items-center">
+            <DescriptionContent translateType={translateType} />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-col items-center hidden md:flex">
+        <DescriptionContent translateType={translateType} />
       </div>
     </div>
   );

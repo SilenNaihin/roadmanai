@@ -5,61 +5,17 @@ interface AskBoxProps {
   setAudioFile: React.Dispatch<React.SetStateAction<Blob | null>>;
   handleFormSubmit: (e: React.FormEvent, text: string) => void;
   placeholder: string;
-  audioFile: Blob | null;
-  setTranscription: React.Dispatch<React.SetStateAction<string>>;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  newResponse: boolean;
-  setNewResponse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AskBox: React.FC<AskBoxProps> = ({
   setAudioFile,
   handleFormSubmit,
   placeholder,
-  audioFile,
-  setTranscription,
-  setLoading,
-  newResponse,
-  setNewResponse,
 }) => {
   const [text, setText] = useState<string>('');
 
-  const transcribe = async (audioFile: Blob) => {
-    const formData = new FormData();
-    formData.append('audioFile', audioFile, 'audio.webm');
-
-    const transcriptionResponse = await fetch(`/api/transcribe`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!transcriptionResponse.ok) {
-      throw new Error(`HTTP error! status: ${transcriptionResponse.status}`);
-    }
-
-    return await transcriptionResponse.json();
-  };
-
-  useEffect(() => {
-    const transcribeAudio = async () => {
-      if (!audioFile || newResponse) return;
-
-      try {
-        setLoading(true);
-        const transcriptionData = await transcribe(audioFile);
-        setLoading(false);
-        setTranscription(transcriptionData.transcript.text);
-      } catch (error) {
-        console.error('Error:', error);
-        setLoading(false);
-      }
-    };
-
-    transcribeAudio();
-  }, [audioFile]);
-
   return (
-    <div className="w-1/2 flex flex-col">
+    <div className="w-11/12 sm:w-4/5 md:w-3/5 lg:w-1/2 flex flex-col">
       <textarea
         className="hover:border-gray-400 border-gray-300 px-2 py-1 border w-full h-24 resize-none rounded-xl"
         onChange={(e) => setText(e.target.value)}
@@ -68,10 +24,7 @@ const AskBox: React.FC<AskBoxProps> = ({
         name="translate"
       />
       <div className="mt-2 w-full flex justify-between items-center">
-        <AudioRecorder
-          setAudioFile={setAudioFile}
-          setNewResponse={setNewResponse}
-        />
+        <AudioRecorder setAudioFile={setAudioFile} />
         <button
           onClick={(e) => handleFormSubmit(e, text)}
           className="drop-shadow hover:transition-all hover:drop-shadow-xl text-white font-medium rounded py-1 px-2 bg-black"

@@ -6,13 +6,9 @@ import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 
 interface AudioRecorderProps {
   setAudioFile: React.Dispatch<React.SetStateAction<Blob | null>>;
-  setNewResponse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AudioRecorder: React.FC<AudioRecorderProps> = ({
-  setAudioFile,
-  setNewResponse,
-}) => {
+const AudioRecorder: React.FC<AudioRecorderProps> = ({ setAudioFile }) => {
   const [recording, setRecording] = useState<boolean>(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -22,7 +18,6 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     if (mediaRecorder !== null) {
       recording ? mediaRecorder.stop() : mediaRecorder.start();
       setRecording(!recording);
-      setNewResponse(false);
     }
   };
 
@@ -40,6 +35,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
 
           newMediaRecorder.onstop = () => {
             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            console.log(audioBlob);
             setAudioFile(audioBlob);
           };
         };

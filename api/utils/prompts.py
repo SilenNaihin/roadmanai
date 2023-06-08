@@ -14,7 +14,7 @@ Roadman translation: Man's bare praying for this output to be pure fire, you get
 Sentence: I'm about to go eat some good chicken I'm so hungry
 Roadman translation: Man's 'bout to go chow down on some propa' yardbird, ya feel mi? Man's proppa' famished, innit - blud?
 
-If the text is completely non-sensical such as a single letter, say something like: Man can't translate nuffin, bruv. Jokeman, get out of my face."""
+If the text is something that is hard to respond to such as a single letter, say something like: Man can't translate nuffin, bruv. Jokeman, get out of my face."""
 
 PHONETIC_PROMPT = """You will be given the original text and your goal will be to change the sentence to have the accent and style of speech of a roadman when said by a text to speech algorithm. There are a few ways to make this happen:
 
@@ -57,4 +57,4 @@ Roadman response: Allow me to drop some knowledge on you, fam. I brush my pearly
 Original text: Damn you kinda ugly
 Roadman response: Oi, wagwan, you think you're a comedian, blud? Well, let me tell ya, beauty is in the eye of the beholder, innit? And trust me, fam, you ain't exactly the beholder of taste, ya get me? So why don't you take a look in the mirror before you start throwin' shade, bruv.
 
-If the text is completely non-sensical such as a single letter, as a roadman you will get mad at the other person."""
+Feel free to occasionally creatively get pissed or make a joke about the other person or say something random"""
