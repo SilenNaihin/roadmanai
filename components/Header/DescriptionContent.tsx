@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+'use client';
+
+import { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
-import { TranslationType } from './Parent';
+import { TranslationType } from '../Parent';
 
 interface DescriptionContentProps {
   translateType: TranslationType;

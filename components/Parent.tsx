@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import Input from './Input';
-import Description from './Description';
+import Input from './Content/Input';
+import Description from './Header/Description';
 
 export type TranslationType = 'translate' | 'ask';
 

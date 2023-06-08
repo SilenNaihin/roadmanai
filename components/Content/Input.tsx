@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import AskBox from './AskBox';
 import ResponseBox from './ResponseBox';
-import { TranslationType, ParentProps } from './Parent';
+import { TranslationType, ParentProps } from '../Parent';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

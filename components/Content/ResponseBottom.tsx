@@ -1,3 +1,5 @@
+'use client';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightLong, faDownload } from '@fortawesome/free-solid-svg-icons';
 

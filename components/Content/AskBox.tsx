@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import AudioRecorder from './AudioRecorder';
 import useWindowSize from '@/hooks/useWindowSize';
 

@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import DescriptionContent from './DescriptionContent';
 
-import { TranslationType } from './Parent';
+import { TranslationType } from '../Parent';
 
 interface DescriptionProps {
   translateType: TranslationType;
