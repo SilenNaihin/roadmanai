@@ -61,3 +61,22 @@ You are now ready to start developing! Changes you make in your files will autom
 ### Further Help
 
 If you have any issues setting up the project or running the server, feel free to create an issue or reach me at [https://twitter.com/silennai](https://twitter.com/silennai). I'll be happy to help :)
+
+#### The Future?
+
+Talking avatar from uploaded pics?
+
+- https://elai.io/getting-started-with-api
+- https://www.deepbrain.io/
+- https://www.heygen.com/avatars
+- https://www.d-id.com/api/
+
+Accent in any style
+
+- Prompt: Person
+- Description (if person isn't famous): Description of person
+- Voice: upload mp3 or link yt vid
+
+Tech
+
+- Switch to Node backend for streaming Whisper, 3.5, Eleven
